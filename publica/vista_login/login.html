@@ -49,7 +49,7 @@
       <button type="submit" class="btn btn-login w-100">Ingresar</button>
     </form>
     <p class="text-center mt-3">
-      ¿No tienes cuenta? <a href="/publica/vista_cliente/registrar.html">Regístrate aquí</a>
+      ¿No tienes cuenta? <a href="/vista_cliente/registrar.html">Regístrate aquí</a>
     </p>
   </div>
 
@@ -61,7 +61,7 @@
       const password = document.getElementById("password").value;
 
       try {
-        // 👇 ahora usamos ruta relativa (funciona local y en Render)
+        // Ruta del backend para login
         const res = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -71,19 +71,19 @@
         const data = await res.json();
 
         if (res.ok) {
-          // Guardar token en localStorage
+          // Guardar token y rol en localStorage
           localStorage.setItem("token", data.token);
           localStorage.setItem("rol", data.usuario.rol);
 
           alert(`Bienvenido ${data.usuario.username}`);
 
-          // Redirigir según rol
+          // Redirigir según rol (sin /publica/)
           if (data.usuario.rol === "ADMIN_DB") {
-            window.location.href = "/publica/vista_admin/menu_principal.html";
+            window.location.href = "/vista_admin/menu_principal.html";
           } else if (data.usuario.rol === "CLIENTE") {
-            window.location.href = "/publica/vista_cliente/cajero.html";
+            window.location.href = "/vista_cliente/cajero.html";
           } else {
-            window.location.href = "/publica/vista_admin/menu_principal.html";
+            window.location.href = "/vista_admin/menu_principal.html";
           }
         } else {
           alert(data.mensaje || "Error en login");
