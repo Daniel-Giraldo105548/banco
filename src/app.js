@@ -25,6 +25,7 @@ app.use((req, res, next) => {
    Servir archivos estáticos
    ------------------------- */
 // Sirve cualquier archivo dentro de la carpeta 'publica'
+app.use(express.static(path.join(__dirname, '../publica')));
 
 // Ruta raíz: devuelve tu HTML específico
 app.get('/', (req, res) => {
