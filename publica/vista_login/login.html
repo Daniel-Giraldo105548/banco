@@ -61,7 +61,8 @@
       const password = document.getElementById("password").value;
 
       try {
-        const res = await fetch("http://localhost:3000/api/usuario/login", {
+        // 👇 ahora usamos ruta relativa (funciona local y en Render)
+        const res = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password })
@@ -71,21 +72,21 @@
 
         if (res.ok) {
           // Guardar token en localStorage
-          localStorage.setItem("token", data.resultado.token);
-          localStorage.setItem("rol", data.resultado.usuario.rol);
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("rol", data.usuario.rol);
 
-          alert(`Bienvenido ${data.resultado.usuario.username}`);
+          alert(`Bienvenido ${data.usuario.username}`);
 
           // Redirigir según rol
-          if (data.resultado.usuario.rol === "ADMIN_DB") {
+          if (data.usuario.rol === "ADMIN_DB") {
             window.location.href = "/publica/vista_admin/menu_principal.html";
-          } else if (data.resultado.usuario.rol === "CLIENTE") {
+          } else if (data.usuario.rol === "CLIENTE") {
             window.location.href = "/publica/vista_cliente/cajero.html";
           } else {
             window.location.href = "/publica/vista_admin/menu_principal.html";
           }
         } else {
-          alert(data.mensaje);
+          alert(data.mensaje || "Error en login");
         }
       } catch (error) {
         alert("Error en el servidor: " + error.message);
