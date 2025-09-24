@@ -10,7 +10,7 @@ const barrio_ruta = require('./rutas/ruta_barrio');
 const usuario_ruta = require('./rutas/ruta_usuario');
 const corresponsal_ruta = require('./rutas/ruta_correponsal');
 const departamento_ruta = require('./rutas/ruta_departartamento');
-const auth_ruta = require('./rutas/ruta_auth'); // 👈 Nueva ruta de login/register
+const auth_ruta = require('./rutas/ruta_auth'); //  Nueva ruta de login/register
 
 app.use(express.json());
 app.use(cors());
