@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const app = express(); 
+const app = express();
 const cors = require('cors');
+const path = require('path'); // <<< necesario para sendFile
 
 const cliente_ruta = require('./rutas/ruta_cliente');
 const barrio_ruta = require('./rutas/ruta_barrio');
@@ -18,19 +19,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Ruta raíz para Render (debe ir ANTES de las rutas /api)
-app.get("/", (req, res) => {
-  res.send("Servidor funcionando 🚀");
+/* -------------------------
+   Servir archivos estáticos
+   ------------------------- */
+// Sirve cualquier archivo dentro de la carpeta 'publica'
+app.use(express.static(path.join(__dirname, '../publica')));
+
+// Ruta raíz: devuelve tu HTML específico
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../publica/vista_municipio/inicio.html'));
 });
 
-// Rutas
+/*  Opcional: si usas client-side routing (SPA),
+    añade tambien una ruta catch-all para devolver index (si fuera necesario):
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../publica/vista_municipio/inicio.html'));
+});
+*/
+
+// Rutas API (se mantienen)
 app.use('/api/cliente', cliente_ruta);
 app.use('/api/barrio', barrio_ruta);
 app.use('/api/usuario', usuario_ruta);
 app.use('/api/corresponsal', corresponsal_ruta);
 app.use('/api/departamento', departamento_ruta);
 
-// Middleware para rutas no encontradas
+// Middleware para rutas no encontradas (aplicará a /api/... que no existan)
 app.use((req, res, next) => {
   res.status(404).json({ mensaje: "Ruta no encontrada" });
 });
@@ -42,8 +56,6 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
-// Levantar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor iniciado en http://localhost:${PORT}`);
 });
