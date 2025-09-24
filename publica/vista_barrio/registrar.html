@@ -82,7 +82,7 @@
           alert('Cliente registrado con éxito');
           // Redirigir a la vista de creación de usuario pasando el cliente_id
           const clienteId = data.resultado.cliente_id;
-          window.location.href = `/publica/vista_usuario/crear_usuario.html?cliente_id=${clienteId}`;
+          window.location.href = `/vista_usuario/crear_usuario.html?cliente_id=${clienteId}`;
         } else {
           alert(data.mensaje || 'Error en el registro');
         }

@@ -53,7 +53,7 @@
       <button type="submit" class="btn btn-login w-100">Registrarse</button>
     </form>
     <p class="text-center mt-3">
-      ¿Ya tienes cuenta? <a href="/publica/vista_login/login.html">Inicia sesión aquí</a>
+      ¿Ya tienes cuenta? <a href="/vista_login/login.html">Inicia sesión aquí</a>
     </p>
   </div>
 
@@ -81,7 +81,7 @@
 
         if (res.ok) {
           alert("Cuenta creada correctamente. ¡Ahora puedes iniciar sesión!");
-          window.location.href = "/publica/vista_login/login.html";
+          window.location.href = "/vista_login/login.html";
         } else {
           alert(data.mensaje);
         }
