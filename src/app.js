@@ -18,9 +18,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Ruta raíz de prueba (para Render)
+// ✅ Ruta raíz para Render (debe ir ANTES de las rutas /api)
 app.get("/", (req, res) => {
-  res.send("Servidor funcionando ");
+  res.send("Servidor funcionando 🚀");
 });
 
 // Rutas
