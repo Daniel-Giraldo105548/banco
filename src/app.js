@@ -18,6 +18,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Ruta raíz de prueba (para Render)
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando ");
+});
+
 // Rutas
 app.use('/api/cliente', cliente_ruta);
 app.use('/api/barrio', barrio_ruta);
