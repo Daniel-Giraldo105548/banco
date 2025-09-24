@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Actualizar Cliente – Banco</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --bs-primary: #0275d8;
+      --bs-secondary: #f5f8fa;
+    }
+    body {
+      background-color: var(--bs-secondary);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .navbar-custom {
+      background-color: var(--bs-primary);
+    }
+    .navbar-custom .navbar-brand {
+      color: #fff;
+    }
+    .card-custom {
+      max-width: 600px;
+      margin: 100px auto;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+      background-color: var(--bs-primary);
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #0256a3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/publica/vista_cliente/panel_clientes.html">
+        <i class="bi bi-people"></i> Gestión de Clientes
+      </a>
+    </div>
+  </nav>
+
+  <!-- Formulario Actualizar Cliente -->
+  <div class="card card-custom">
+    <div class="card-header bg-primary text-white text-center">
+      <h4><i class="bi bi-pencil-square"></i> Actualizar Cliente</h4>
+    </div>
+    <div class="card-body">
+      <!-- Buscar cliente -->
+      <form id="buscarClienteForm" class="mb-4">
+        <div class="input-group">
+          <input type="number" id="cliente_id" class="form-control" placeholder="Ingrese ID Cliente" required>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i> Buscar
+          </button>
+        </div>
+      </form>
+
+      <!-- Actualizar datos -->
+      <form id="actualizarClienteForm" style="display:none;">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="apellido" class="form-label">Apellido</label>
+          <input type="text" id="apellido" class="form-control">
+        </div>
+
+        <div class="mb-3">
+          <label for="documento" class="form-label">Documento</label>
+          <input type="text" id="documento" class="form-control" disabled>
+        </div>
+
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="text" id="telefono" class="form-control">
+        </div>
+
+        <div class="mb-3">
+          <label for="correo" class="form-label">Correo</label>
+          <input type="email" id="correo" class="form-control">
+        </div>
+
+        <div class="mb-3">
+          <label for="direccion" class="form-label">Dirección</label>
+          <input type="text" id="direccion" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+          <i class="bi bi-check-circle"></i> Guardar Cambios
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    const buscarForm = document.getElementById("buscarClienteForm");
+    const actualizarForm = document.getElementById("actualizarClienteForm");
+
+    // Buscar cliente por ID
+    buscarForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("cliente_id").value;
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/cliente/${id}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.mensaje || "Cliente no encontrado");
+          return;
+        }
+
+        // Rellenar formulario
+        document.getElementById("nombre").value = data.resultado.nombre;
+        document.getElementById("apellido").value = data.resultado.apellido || "";
+        document.getElementById("documento").value = data.resultado.documento;
+        document.getElementById("telefono").value = data.resultado.telefono || "";
+        document.getElementById("correo").value = data.resultado.correo || "";
+        document.getElementById("direccion").value = data.resultado.direccion || "";
+
+        actualizarForm.style.display = "block";
+      } catch (error) {
+        alert("Error al conectar con el servidor");
+        console.error(error);
+      }
+    });
+
+    // Actualizar cliente
+    actualizarForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("cliente_id").value;
+
+      const clienteData = {
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        telefono: document.getElementById("telefono").value,
+        correo: document.getElementById("correo").value,
+        direccion: document.getElementById("direccion").value
+      };
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/cliente/actualizar/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(clienteData)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("Cliente actualizado con éxito");
+        } else {
+          alert(data.mensaje || "Error al actualizar");
+        }
+      } catch (error) {
+        alert("Error al conectar con el servidor");
+        console.error(error);
+      }
+    });
+  </script>
+
+</body>
+</html>

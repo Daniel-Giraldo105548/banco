@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro de Usuario – Banco</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f8fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card-usuario {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    .btn-registrar {
+      background-color: #0275d8;
+      color: #fff;
+    }
+    .btn-registrar:hover {
+      background-color: #0256a3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card-usuario">
+    <h3 class="text-center mb-4"><i class="bi bi-person-plus-fill"></i> Registrar Usuario</h3>
+    <form id="formUsuario">
+      <div class="mb-3">
+        <label for="username" class="form-label">Nombre de Usuario</label>
+        <input type="text" class="form-control" id="username" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="password" required>
+      </div>
+      <div class="mb-3">
+        <label for="rol" class="form-label">Rol</label>
+        <select class="form-select" id="rol" required>
+          <option value="ADMIN_DB">ADMIN_DB</option>
+          <option value="BACKOFFICE">BACKOFFICE</option>
+          <option value="ASESOR">ASESOR</option>
+          <option value="AUDITOR">AUDITOR</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <select class="form-select" id="estado" required>
+          <option value="ACTIVO" selected>ACTIVO</option>
+          <option value="INACTIVO">INACTIVO</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-registrar w-100">Registrar Usuario</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("formUsuario").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const usuarioData = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        rol: document.getElementById("rol").value,
+        estado: document.getElementById("estado").value
+      };
+
+      try {
+        const res = await fetch("http://localhost:3000/api/usuario/registrar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(usuarioData)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("Usuario registrado correctamente");
+          // opcional: limpiar formulario
+          document.getElementById("formUsuario").reset();
+        } else {
+          alert(data.mensaje || "Error al registrar usuario");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("No se pudo conectar con el servidor");
+      }
+    });
+  </script>
+
+</body>
+</html>

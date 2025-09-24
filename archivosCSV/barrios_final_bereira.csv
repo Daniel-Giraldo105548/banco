@@ -1,0 +1,471 @@
+id_barrio,nombre,id_comuna
+883,Veracruz II,22
+884,Veracruz,22
+885,San Vicente,22
+886,Nuevo Plan,22
+887,Monserrate,22
+888,Las Margaritas,22
+889,Las Brisas,22
+890,La Isla,22
+891,Intermedio,22
+892,El Otono,22
+893,"El Danubio *2, *4",22
+894,Comfamiliar Villasantana,22
+895,Ciudadela Tokio *2,22
+896,Bellavista,22
+847,Zea,23
+848,Santa Teresita,23
+849,Santa Elena,23
+850,San Juan de Dios,23
+851,San Juan,23
+852,San Jorge,23
+853,San Camilo,23
+854,San Antonio,23
+855,Salvador Allende,23
+856,Jaime Salazar Robledo,23
+857,Salazar Londono,23
+858,Risaralda,23
+859,Remigio Antonio Canarte,23
+860,Primero de Mayo,23
+861,Nuevo Penol,23
+862,Mirasol,23
+863,Los Alcazares,23
+864,Las Palmas,23
+865,La Sirena,23
+866,La Palmera,23
+867,La Esperanza,23
+868,Jose Marti,23
+869,Jose Antonio Galan,23
+870,Jorge Eliecer Gaitan,23
+871,Gualanday,23
+872,Getsemani,23
+873,Enrique Millan Rubio,23
+874,El Triunfo,23
+875,El Progreso,23
+876,El Prado,23
+877,Constructores,23
+878,Colinas Del Triunfo,23
+879,Campina del Otun,23
+880,Byron Gaviria,23
+881,Bavaria,23
+882,America,23
+828,Venecia,24
+829,Turin,24
+830,Sector Plaza de Bolivar,24
+831,Sector Parque La Libertad,24
+832,Sector Lago Uribe,24
+833,Sector Galeria Central,24
+834,Sector 30 de Agosto,24
+835,Sector 30 de Agosto,24
+836,Santander,24
+837,San Esteban,24
+838,Ricardo Ramirez Carmona,24
+839,Primero de Febrero,24
+840,Los Periodistas,24
+841,Los Nogales,24
+842,Las Garzas,24
+843,La Victoria,24
+844,La Paz,24
+845,Buenos Aires,24
+846,Bloques Primero de Febrero,24
+823,Villavicencio,25
+824,Los Andes,25
+825,Los Andes,25
+826,Corocito,25
+827,Berlin,25
+802,Simon Bolivar,26
+803,Santander,26
+804,San Gregorio,26
+805,San Francisco,26
+806,Pimpollo - Libare *2,26
+807,Paz Del Rio,26
+808,Ormaza,26
+809,La Rivera,26
+810,La Pupi,26
+811,Kennedy,26
+812,Hernando Velez Marulanda,26
+813,El Pizamo,26
+814,Chico Restrepo,26
+815,Cesar Nader Nader,26
+816,Castano Robledo,26
+817,Brisas Del Otun,26
+818,Arboleda Del Rio,26
+819,Antonio Narino,26
+820,"Altos Del Otun *2, *3",26
+821,Alfonso Lopez,26
+822,20 de Julio,26
+779,Villa Los Alamos,27
+780,San Jose Sur,27
+781,San Jose,27
+782,"Quintanar Del Cerro *1, *3",27
+783,Puerta de Abacanto,27
+784,Popular Modelo,27
+785,Pinares de San Martin,27
+786,Los Rosales,27
+787,Los Angeles,27
+788,Los Alpes,27
+789,Los Alamos,27
+790,La Sierra,27
+791,La Parcela,27
+792,La Julita,27
+793,La Julia,27
+794,La Ensenanza,27
+795,La Aurora,27
+796,Favi Utp,27
+797,"El Bosque *1, *3",27
+798,Ciudad Jardin,27
+799,Canaan,27
+800,Cambulos,27
+801,Altos de Canaan,27
+740,Villa Del Sol,28
+741,Villa Colombia,28
+742,Verona,28
+743,Venecia,28
+744,Vasconia,28
+745,Tulcan III,28
+746,Tulcan II,28
+747,Tulcan I,28
+748,Travesuras - La Churria,28
+749,Terminal,28
+750,Santa Catalina II,28
+751,San Remo,28
+752,San Luis Gonzaga,28
+753,Providencia,28
+754,Pereira,28
+755,Olaya Herrera,28
+756,Mejia Robledo,28
+757,Los Profesionales,28
+758,Los Almendros,28
+759,Las Gaviotas,28
+760,La Unidad,28
+761,La Platanera,28
+762,La Lorena IV,28
+763,La Lorena III,28
+764,La Lorena II,28
+765,La Lorena I,28
+766,La Laguna,28
+767,La Florida,28
+768,La Arboleda,28
+769,Guaduales de Canaan,28
+770,El Vergel,28
+771,Ciudad Pereira,28
+772,Ciudad Palermo,28
+773,Central,28
+774,Centenario,28
+775,Caminos de Canaan,28
+776,Boston,28
+777,Bosques de La Salle,28
+778,Belalcazar,28
+704,Villas Del Jardin III,29
+705,Villas Del Jardin II,29
+706,Villas Del Jardin I,29
+707,Sector 30 de Agosto,29
+708,Rincon de Las Quintas,29
+709,Portal de Los Cedros,29
+710,Niza II,29
+711,Niza I,29
+712,Mayorca,29
+713,Maraya,29
+714,Maraya,29
+715,Maraya,29
+716,Conjunto Residencial Tisu,29
+717,Los Quimbayas,29
+718,Los Cedros,29
+719,Los Arrayanes,29
+720,Los Andes,29
+721,Las Mangas,29
+722,La Elvira,29
+723,Jardin III,29
+724,Jardin II,29
+725,Jardin I,29
+726,Jardin de Velez Y Velez,29
+727,Cedritos,29
+728,Caminos de Maraya,29
+729,Brasilia,29
+730,Brasilia,29
+731,Bosques de Santa Elena I,29
+732,Balcones Condominio,29
+733,Altos de Tananbi,29
+734,Jardines de Tanambi,29
+735,Andalucia,29
+736,Arco Iris de la Colina,29
+737,La Castellana,29
+738,Paseo de la Castellana,29
+739,Alcazar de Maraya,29
+695,San Fernando,30
+696,Rafael Uribe I,30
+697,La Union,30
+698,La Playita,30
+699,La Independencia *1,30
+700,Cuba,30
+701,Cortes,30
+702,Brisas Del Consota,30
+703,Barberos,30
+664,Villa Elena,31
+665,Villa de La Paz,31
+666,Villa Consota,31
+667,Villa Cecilia,31
+668,Villa Andrea,31
+669,Vendedores Ambulantes,31
+670,Sanai II,31
+671,Restrepo,31
+672,Quintas de Panorama II,31
+673,Quintas de Panorama I,31
+674,Porvenir,31
+675,Plan Camilo,31
+676,Panorama I,31
+677,Normandia,31
+678,Naranjito,31
+679,El Paraiso,31
+680,Mirador de Naranjito,31
+681,Miraflores *4,31
+682,Mirador de Bella Sardi,31
+683,La Idalia II,31
+684,Los Nogales,31
+685,Las Piramides,31
+686,La Divisa,31
+687,El Rosal,31
+688,El Futuro,31
+689,Dorado II,31
+690,Dorado I,31
+691,Bella Sardi,31
+692,Antonio Jose Valencia,31
+693,Antonio Jose de Sucre,31
+694,Aguas Claras,31
+606,Obelisco de la VIlla,32
+607,Villas de La Madrid,32
+608,Villasol Parque Residencial,32
+609,Serrezuela,32
+610,Villa Ilusion,32
+611,Villa Alicia,32
+612,Toluca,32
+613,Santa Monica,32
+614,Santa Cruz de Gamma,32
+615,San Felipe,32
+616,Samanes de Belmonte,32
+617,Rincon de La Villa,32
+618,Rincon de La Palma,32
+619,Reserva de La Villa,32
+620,Pinar de Gamma,32
+621,Pinar de Belmonte,32
+622,Olimpico II,32
+623,Olimpico I,32
+624,Multifamiliar La Villa,32
+625,Mirador de La Cien,32
+626,Los Nogales,32
+627,Los Corales,32
+628,Coral Plaza,32
+629,Los Arrevoles,32
+630,La Villa,32
+631,La Glorieta,32
+632,Jardines de La Villa,32
+633,Gamma V,32
+634,Gamma V,32
+635,Senderos de Unicentro,32
+636,Bosques de Cantabria,32
+637,Gamma IV,32
+638,Rincon de Unicentro,32
+639,Gamma III,32
+640,Gamma II,32
+641,Fegove,32
+642,El Pizamo,32
+643,El Palmar,32
+644,El Palmar,32
+645,Olivar de los Vientos II,32
+646,Olivar de los Vientos,32
+647,Olivar de los Vientos,32
+648,La Italia,32
+649,El Campin III,32
+650,El Campin I-II,32
+651,Colores de La Villa,32
+652,Alegrias de la Villa,32
+653,Rivera Campestre,32
+654,San Sebastian,32
+655,Canaveral II,32
+656,Canaveral II,32
+657,Canaveral,32
+658,Belmonte,32
+659,Belmonte B,32
+660,Altos de Belmonte,32
+661,Alhambra,32
+662,Alfa,32
+663,Alcazares,32
+589,Nueva Esperanza,33
+590,El PlumÃ‚Â¾n Bajo,33
+591,El PlumÃ‚Â¾n Alto,33
+592,El PlumÃ‚Â¾n,33
+593,Torres de San Mateo,33
+594,Simon Bolivar,33
+595,Catalan,33
+596,Portal de La Villa,33
+597,Portal de La Villa,33
+598,Nacederos,33
+599,Matecana,33
+600,La Libertad,33
+601,La Hacienda,33
+602,Jose Hilario Lopez II,33
+603,Jose Hilario Lopez I,33
+604,Gabriel Trujillo,33
+605,Sureste de la Sierra,33
+541,Tinajas,34
+542,EL Nogal Club Residencial,34
+543,Santa Juana de Las Villas,34
+544,Santa Clara de Las Villas *4,34
+545,San Marcos,34
+546,San Joaquin,34
+547,Rafael Uribe III,34
+548,Rafael Uribe II,34
+549,Portales de Birmania,34
+550,Portal de San Joaquin II,34
+551,Portal de San Joaquin I,34
+552,Portal de Corales,34
+553,Plan Carvajal,34
+554,Perla Del Sur,34
+555,Los Girasoles,34
+556,Los Geranios,34
+557,Los Conquistadores,34
+558,Los Cisnes,34
+559,Letras,34
+560,Leningrado III,34
+561,Leningrado II,34
+562,Laureles II,34
+563,Laureles I,34
+564,La Isla,34
+565,Jose Maria Cordoba,34
+566,Guayacanes,34
+567,Gibraltar,34
+568,El Recreo,34
+569,Alcala del Campo,34
+570,El Eden,34
+571,El Crucero,34
+572,El Cardal,34
+573,Coralina,34
+574,Bulevar del Bosque,34
+575,Bulevar de las Villas,34
+576,Bulevar de las Villas,34
+577,Bulevar del Cafe,34
+578,Quintas de Corazal,34
+579,Codelmar IV,34
+580,Codelmar III,34
+581,Codelmar II,34
+582,Codelmar I,34
+583,Ciudadela Comfamiliar II,34
+584,Ciudadela Comfamiliar I,34
+585,Campo Alegre *3,34
+586,Bello Horizonte,34
+587,Atenas,34
+588,Altos de Corales,34
+520,Villa Rocio,35
+521,Villa Maria,35
+522,Villa Kennedy,35
+523,Sinai,35
+524,Neyra Marquez,35
+525,Metropolitano,35
+526,Los Almendros,35
+527,La Policia,35
+528,La Francia,35
+529,La Francia,35
+530,La Albania,35
+531,La Albania,35
+532,Independientes,35
+533,Heroes II,35
+534,Heroes I,35
+535,Gaviria Trujillo,35
+536,El Paraiso,35
+537,El Bosque,35
+538,Departamento,35
+539,Carlos Alberto Benavides,35
+540,Aranjuez,35
+427,Terranova,36
+470,Vista Hermosa,36
+471,Villa Navarra,36
+472,Villa Ligia III,36
+473,Villa Ligia,36
+474,Villa Elisa,36
+475,Villa Del Sur,36
+476,Villa Del Bosque,36
+477,Torres de La Acuarela,36
+478,Sauces V,36
+479,Sauces IV,36
+480,Sauces III,36
+481,Sauces II,36
+482,Sauces I,36
+483,Santafe,36
+484,San Felipe,36
+485,Quintas de Los Sauces,36
+486,Quintas de La Acuarela II,36
+487,Quintas de La Acuarela I,36
+488,Pueblito Paisa,36
+489,Portal de Las Mercedes,36
+490,Olimpia,36
+491,Nueva Colombia,36
+492,Montelibano,36
+493,Porto Alegre,36
+494,Porto Alegre Etp 2,36
+495,Ciudadela Villa de Leyva,36
+496,Guadacanal,36
+497,Mirador de Panorama III,36
+498,Mirador de Panorama II,36
+499,Mirador de Panorama I,36
+500,Los Prados,36
+501,Los Pinos,36
+502,Los Cristales,36
+503,Libertador II,36
+504,Libertador,36
+505,La Nueva Villa,36
+506,La Idalia,36
+507,La Habana,36
+508,La Floresta,36
+509,La Bretana,36
+510,La Acuarela,36
+511,Jaime Pardo Leal,36
+512,Hacienda Cuba,36
+513,Guadalupe,36
+514,Even-Ezer,36
+515,El Acuario,36
+516,Cinco de Octubre,36
+517,Altos de Panorama,36
+518,Alejandria,36
+519,Alameda,36
+462,Villa Nohemy,37
+463,Villa Mery,37
+464,San Nicolas,37
+465,San Martin de Loba,37
+466,Nuevo Mejico,37
+467,Las Antillas,37
+468,La Dulcera,37
+469,Brisas de Las Americas,37
+460,Rocio Alto *3,38
+461,Caracol La Curva *4,38
+440,Villa Los Comunales,39
+441,Villa Del Cafe,39
+442,Sector B,39
+443,Rincon Del Cafe,39
+444,Paz Verde,39
+445,Nuevo Horizonte,39
+446,Malaga *1,39
+447,Horizontes,39
+448,Ciudadela Comfamiliar Boquia,39
+449,Comfamiliar Boquia,39
+450,Alameda del Cafe,39
+451,Luis Alberto Duque,39
+452,Portal de Llano Grande,39
+453,Ciudad Boquia *1,39
+454,Carlos Enrique Soto,39
+455,Antonio Ricaurte,39
+456,Altos de Los Angeles,39
+457,Altos de Llano Grande II *2,39
+458,Mirador de Llano Grande,39
+459,Alamos Del Cafe,39
+428,Villa Del Prado,40
+429,Villa Del Palmar,40
+430,Samaria II,40
+431,Samaria I,40
+432,Portal de San Jacinto,40
+433,Rocio Bajo,40
+434,Poblado II,40
+435,Poblado I,40
+436,Hamburgo,40
+437,Cachipay,40
+438,Barajas,40
+439,Balcones de Villa Del Prado,40

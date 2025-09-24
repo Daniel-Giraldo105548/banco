@@ -1,0 +1,463 @@
+id_barrio,nombre,id_comuna
+427,Veracruz II,23
+428,Veracruz,23
+429,San Vicente,23
+430,Nuevo Plan,23
+431,Naranjito,23
+432,Las Colinas,23
+433,La Capilla,23
+434,Jesus Maria Ormaza,23
+435,Gilberto Peláez,23
+436,El Remanso,23
+437,El Futuro,23
+438,El Danubio,23
+439,El Balso,23
+440,Divino Niño,23
+441,Canada,23
+442,Gualanday,24
+443,Getsemani,24
+444,Enrique Millan Rubio,24
+445,El Triunfo,24
+446,El Progreso,24
+447,El Prado,24
+448,Constructores,24
+449,Colinas Del Triunfo,24
+450,Campina del Otun,24
+451,Byron Gaviria,24
+452,Bavaria,24
+453,America,24
+454,Las Brisas,25
+455,Los Pinos,25
+456,Los Pinos,25
+457,Los Pinos,25
+458,Los Pinos,25
+459,Los Pinos,25
+460,Los Pinos,25
+461,Los Pinos,25
+462,Los Pinos,25
+463,Los Pinos,25
+464,Los Pinos,25
+465,Los Pinos,25
+466,El Manantial,26
+467,El Nogal,26
+468,El Progreso,26
+469,El Rosal,26
+470,El Vergel,26
+471,Galicia,26
+472,La Libertad,26
+473,La Cuchilla,26
+474,La Paz,26
+475,La Aurora,26
+476,Jazmin,26
+477,La Amistad,26
+478,La Castellana,26
+479,La Union,26
+480,Las Gaviotas,26
+481,Villavicencio,26
+482,El Futuro,26
+483,El Manantial,26
+484,El Porvenir,26
+485,El Oasis,26
+486,El Porvenir,26
+487,El Oasis,26
+488,El Pinar,26
+489,El Recreo,26
+490,El Nogal,26
+491,El Mirador,26
+492,El Futuro,26
+493,El Jazmin,26
+494,El Jordán,26
+495,El Manantial,26
+496,El Nogal,26
+497,El Progreso,26
+498,El Rosal,26
+499,El Vergel,26
+500,Galicia,26
+501,La Libertad,26
+502,La Cuchilla,26
+503,La Paz,26
+504,La Aurora,26
+505,Jazmin,26
+506,La Amistad,26
+507,La Castellana,26
+508,La Union,26
+509,Las Gaviotas,26
+510,Villavicencio,26
+511,El Futuro,26
+512,El Manantial,26
+513,El Porvenir,26
+514,El Oasis,26
+515,El Porvenir,26
+516,El Oasis,26
+517,El Pinar,26
+518,El Recreo,26
+519,El Nogal,26
+520,El Mirador,26
+521,El Futuro,26
+522,El Jazmin,26
+523,El Jordán,26
+524,El Manantial,26
+525,El Nogal,26
+526,El Progreso,26
+527,El Rosal,26
+528,El Vergel,26
+529,Galicia,26
+530,La Libertad,26
+531,La Cuchilla,26
+532,La Paz,26
+533,La Aurora,26
+534,La Rivera,26
+535,La Esmeralda,26
+536,Las Colinas,26
+537,Las Gaviotas,26
+538,La Union,26
+539,La Castellana,26
+540,La Amistad,26
+541,Jazmin,26
+542,La Aurora,26
+543,La Paz,26
+544,La Cuchilla,26
+545,La Libertad,26
+546,Galicia,26
+547,El Vergel,26
+548,El Rosal,26
+549,El Progreso,26
+550,El Nogal,26
+551,El Manantial,26
+552,El Jordán,26
+553,El Jazmin,26
+554,El Futuro,26
+555,El Mirador,26
+556,El Nogal,26
+557,El Recreo,26
+558,El Pinar,26
+559,El Oasis,26
+560,El Porvenir,26
+561,El Oasis,26
+562,El Porvenir,26
+563,El Manantial,26
+564,El Futuro,26
+565,Villavicencio,26
+566,El Remanso,27
+567,El Rocio,27
+568,El Recreo,27
+569,El Progreso,27
+570,El Porvenir,27
+571,El Oasis,27
+572,El Nogal,27
+573,El Mirador,27
+574,El Jazmin,27
+575,El Futuro,27
+576,El Jordán,27
+577,El Jardín,27
+578,Belmonte Bajo,28
+579,Belmonte Alto,28
+580,Cataluña,28
+581,Pinares de San Joaquin,28
+582,Pinares,28
+583,Pinares de San Joaquin,28
+584,Pinares,28
+585,La Pradera,28
+586,La Graciela,28
+587,La Libertad,28
+588,La Macarena,28
+589,La Macarena,28
+590,La Macarena,28
+591,Universidad,28
+592,El Portal de la Villa,29
+593,El Portal de la Villa,29
+594,El Portal de la Villa,29
+595,El Portal de la Villa,29
+596,La Pradera,29
+597,La Pradera,29
+598,La Pradera,29
+599,La Pradera,29
+600,La Pradera,29
+601,La Pradera,29
+602,La Pradera,29
+603,La Pradera,29
+604,La Pradera,29
+605,La Pradera,29
+606,La Pradera,29
+607,La Pradera,29
+608,La Pradera,29
+609,San Gregorio,30
+610,San Gregorio,30
+611,San Gregorio,30
+612,San Gregorio,30
+613,San Gregorio,30
+614,San Gregorio,30
+615,San Gregorio,30
+616,San Gregorio,30
+617,San Gregorio,30
+618,San Gregorio,30
+619,San Gregorio,30
+620,San Gregorio,30
+621,San Gregorio,30
+622,La Ciudadela,31
+623,Los Alamos,31
+624,El Balcon de la Comarca,31
+625,El Recreo,31
+626,La Inmaculada,31
+627,La Inmaculada,31
+628,La Inmaculada,31
+629,La Inmaculada,31
+630,La Inmaculada,31
+631,La Inmaculada,31
+632,La Inmaculada,31
+633,La Inmaculada,31
+634,La Inmaculada,31
+635,La Inmaculada,31
+636,La Inmaculada,31
+637,La Inmaculada,31
+638,La Inmaculada,31
+639,La Union,32
+640,La Castellana,32
+641,La Amistad,32
+642,Jazmin,32
+643,La Aurora,32
+644,La Paz,32
+645,La Cuchilla,32
+646,La Libertad,32
+647,Galicia,32
+648,El Vergel,32
+649,El Rosal,32
+650,El Progreso,32
+651,El Nogal,32
+652,El Manantial,32
+653,El Jordán,32
+654,El Jazmin,32
+655,El Futuro,32
+656,El Mirador,32
+657,El Nogal,32
+658,El Recreo,32
+659,El Pinar,32
+660,El Oasis,32
+661,El Porvenir,32
+662,El Oasis,32
+663,El Porvenir,32
+664,El Manantial,32
+665,El Futuro,32
+666,Villavicencio,32
+667,Las Colinas,32
+668,La Esmeralda,32
+669,La Rivera,32
+670,La Aurora II,32
+671,La Paz II,32
+672,La Cuchilla II,32
+673,La Libertad II,32
+674,Galicia II,32
+675,El Vergel II,32
+676,El Rosal II,32
+677,El Progreso II,32
+678,El Nogal II,32
+679,El Manantial II,32
+680,El Jordán II,32
+681,El Jazmin II,32
+682,El Futuro II,32
+683,El Mirador II,32
+684,El Nogal II,32
+685,El Recreo II,32
+686,El Pinar II,32
+687,El Oasis II,32
+688,El Porvenir II,32
+689,El Oasis II,32
+690,El Porvenir II,32
+691,El Manantial II,32
+692,El Futuro II,32
+693,Villavicencio II,32
+694,Las Gaviotas II,32
+695,La Union II,32
+696,La Castellana II,32
+697,La Amistad II,32
+698,Jazmin II,32
+699,La Aurora III,32
+700,La Paz III,32
+701,La Cuchilla III,32
+702,La Libertad III,32
+703,Galicia III,32
+704,El Vergel III,32
+705,El Rosal III,32
+706,El Progreso III,32
+707,El Nogal III,32
+708,El Manantial III,32
+709,El Jordán III,32
+710,El Jazmin III,32
+711,El Futuro III,32
+712,El Mirador III,32
+713,El Nogal III,32
+714,El Recreo III,32
+715,El Pinar III,32
+716,El Oasis III,32
+717,El Porvenir III,32
+718,El Oasis III,32
+719,El Porvenir III,32
+720,El Manantial III,32
+721,El Futuro III,32
+722,Villavicencio III,32
+723,Las Gaviotas III,32
+724,La Union III,32
+725,La Castellana III,32
+726,La Amistad III,32
+727,Jazmin III,32
+728,La Aurora IV,32
+729,La Paz IV,32
+730,La Cuchilla IV,32
+731,La Libertad IV,32
+732,Galicia IV,32
+733,El Vergel IV,32
+734,El Rosal IV,32
+735,El Progreso IV,32
+736,El Nogal IV,32
+737,El Manantial IV,32
+738,El Jordán IV,32
+739,Villa El Campo,33
+740,Villa Campestre,33
+741,Villa Consota,33
+742,Villa del Bosque,33
+743,Villa Hermosa,33
+744,Villa Del Rey,33
+745,Villa Olimpica,33
+746,Villa Campestre,33
+747,Villa Consota,33
+748,Villa del Bosque,33
+749,Villa Hermosa,33
+750,Villa Del Rey,33
+751,Villa Olimpica,33
+752,Villa Hermosa,34
+753,Villa Del Rey,34
+754,Villa Olimpica,34
+755,Villa Campestre,34
+756,Villa Consota,34
+757,Villa del Bosque,34
+758,Villa Hermosa,34
+759,La Pradera,35
+760,La Pradera,35
+761,La Pradera,35
+762,La Pradera,35
+763,La Pradera,35
+764,La Pradera,35
+765,La Pradera,35
+766,La Pradera,35
+767,La Pradera,35
+768,La Pradera,35
+769,La Pradera,35
+770,La Pradera,35
+771,La Pradera,35
+772,La Pradera,35
+773,La Pradera,36
+774,La Pradera,36
+775,La Pradera,36
+776,La Pradera,36
+777,La Pradera,36
+778,La Pradera,36
+779,La Pradera,36
+780,La Pradera,36
+781,La Pradera,36
+782,La Pradera,36
+783,La Pradera,36
+784,La Pradera,36
+785,Terranova,37
+786,Terranova,37
+787,Terranova,37
+788,Terranova,37
+789,Terranova,37
+790,Terranova,37
+791,Terranova,37
+792,Terranova,37
+793,Terranova,37
+794,Terranova,37
+795,Terranova,37
+796,Terranova,37
+797,Terranova,37
+798,Terranova,37
+799,Terranova,37
+800,Terranova,37
+801,Terranova,37
+802,Terranova,37
+803,Terranova,37
+804,Terranova,37
+805,Terranova,37
+806,Terranova,37
+807,Terranova,37
+808,Terranova,37
+809,Terranova,37
+810,Terranova,37
+811,Terranova,37
+812,El Futuro,37
+813,El Futuro,37
+814,El Futuro,37
+815,El Futuro,37
+816,El Futuro,37
+817,El Futuro,37
+818,El Futuro,37
+819,El Futuro,37
+820,El Futuro,37
+821,El Futuro,37
+822,El Futuro,37
+823,El Futuro,37
+824,El Futuro,37
+825,Terranova,38
+826,Terranova,38
+827,Terranova,38
+828,Terranova,38
+829,Terranova,38
+830,Terranova,38
+831,Terranova,38
+832,Terranova,38
+833,Terranova,38
+834,Terranova,38
+835,El Futuro,39
+836,El Futuro,39
+837,El Futuro,39
+838,El Futuro,39
+839,El Futuro,39
+840,El Futuro,39
+841,El Futuro,39
+842,El Futuro,39
+843,El Futuro,39
+844,El Futuro,39
+845,El Futuro,39
+846,El Futuro,39
+847,El Futuro,39
+848,El Futuro,39
+849,El Futuro,39
+850,El Futuro,39
+851,El Futuro,39
+852,El Futuro,39
+853,El Futuro,39
+854,El Futuro,39
+855,El Futuro,39
+856,El Futuro,39
+857,El Futuro,39
+858,El Futuro,39
+859,El Futuro,39
+860,Villa Del Prado,40
+861,Villa Del Palmar,40
+862,Samaria II,40
+863,Samaria I,40
+864,Portal de San Jacinto,40
+865,Rocio Bajo,40
+866,Poblado II,40
+867,Poblado I,40
+868,Hamburgo,40
+869,Cachipay,40
+870,Barajas,40
+871,Balcones de Villa Del Prado,40
+872,Villa Los Comunales,40
+873,Villa Los Comunales,40
+874,Villa Los Comunales,40
+875,Villa Los Comunales,40
+876,Villa Los Comunales,40
+877,Villa Los Comunales,40
+878,Villa Los Comunales,40
+879,Villa Los Comunales,40
+880,Villa Los Comunales,40
+881,Villa Los Comunales,40
+882,Villa Los Comunales,40
+883,Villa Los Comunales,40
+884,Villa Los Comunales,40
+885,Villa Los Comunales,40
+886,Villa Los Comunales,40
+887,Villa Los Comunales,40
+888,Villa Los Comunales,40

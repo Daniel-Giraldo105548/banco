@@ -1,0 +1,313 @@
+id_barrio,nombre_barrio,id_comuna
+1,Arenales,1
+2,Arrayanes,1
+3,Bambusa,1
+4,Bloques de Bosques de Pinares,1
+5,Bosques de Pinares,1
+6,Castilla Grande,1
+7,Ciudadela Simón Bolívar,1
+8,Conjunto Balcones del Edén,1
+9,Conjunto Residencial Guaduales del Edén,1
+10,Conjunto Residencial La Villa,1
+11,El Emperador,1
+12,El Milagro,1
+13,El Palmar,1
+14,Génesis,1
+15,La Arcadia,1
+16,La Castilla,1
+17,La Isabela,1
+18,La Villa,1
+19,Maravelez,1
+20,Nuestra Señora de la Paz,1
+21,Parque de La Villa,1
+22,Pinares,1
+23,Portal de Pinares,1
+24,Portal del Edén,1
+25,Santa María del Bosque,1
+26,Tres Esquinas,1
+27,Urbanización Cañas Gordas,1
+28,Urbanización Guaduales de La Villa,1
+29,Urbanización La Linda,1
+30,Villa Centenario,1
+31,Vista Hermosa,1
+32,14 de Octubre,2
+33,19 de Enero,2
+34,8 de Marzo,2
+35,Alcázar del Café,2
+36,Antonio Nariño,2
+37,Barrio Calima,2
+38,Barrio La Milagrosa,2
+39,Barrio Zuldemayda,2
+40,San Vicente de Paúl,2
+41,Bello Horizonte,2
+42,Bloques El Porvenir,2
+43,Bosques de Gibraltar,2
+44,Ciudadela Puerto Espejo,2
+45,Cristales,2
+46,El Carmelo,2
+47,El Poblado,2
+48,El Tesorito,2
+49,Farallones,2
+50,Gibraltar,2
+51,Jesús María Ocampo,2
+52,La Fachada,2
+53,La Virginia,2
+54,Las Acacias,2
+55,Las Brisas,2
+56,Las Veraneras,2
+57,Los Naranjos,2
+58,Los Quindos,2
+59,Los Quindos II Etapa,2
+60,Los Quindos III Etapa,2
+61,Luis Carlos Galán,2
+62,Manantiales,2
+63,Marco Fidel Suárez,2
+64,Nuevo Horizonte,2
+65,Patricia,2
+66,San Francisco,2
+67,Santa Rita,2
+68,Serranías,2
+69,Urbanización Girasoles,2
+70,Urbanización Jardines de La Fachada,2
+71,Urbanización Lindaraja,2
+72,Urbanización Lindaraja II Etapa,2
+73,Veracruz,2
+74,Villa Alejandra,2
+75,Villa Claudia,2
+76,Villa de la Vida y el Trabajo,2
+77,Villa del Carmen,2
+78,Alfonso López,3
+79,Arcades,3
+80,Barrio 13 de Junio,3
+81,Barrio 25 de Mayo,3
+82,Barrio Arcoiris,3
+83,Barrio Belén,3
+84,Barrio Ciudadela,3
+85,Barrio Cooperativo,3
+86,Barrio El Placer,3
+87,Barrio La Adiela,3
+88,Barrio La Alhambra,3
+89,Barrio La Esmeralda,3
+90,Barrio La Miranda,3
+91,Barrio Los Kioscos,3
+92,Barrio Manuela Beltrán,3
+93,Barrio Mesón de Sinaí,3
+94,Barrio Santa María,3
+95,Barrio Villa Hermosa,3
+96,Barrio Villa Laura,3
+97,Bosques de Viena,3
+98,Casablanca,3
+99,Ciudad Dorada,3
+100,Ciudadela Nuevo Armenia III,3
+101,Ciudadela Nuevo Armenia,3
+102,Ciudadela Nuevo Armenia II,3
+103,Conjunto Residencial Montecarlo,3
+104,Conjunto Residencial Sinaí,3
+105,Cordillera,3
+106,La Cecilia,3
+107,La Cristalina,3
+108,Nuevo Placer,3
+109,Quintas de La Marina,3
+110,Urbanización La Grecia,3
+111,Urbanización Las Colinas,3
+112,Urbanización Loma Verde,3
+113,Urbanización Nuevo Amanecer,3
+114,Urbanización San Diego,3
+115,Urbanización Villa Ángela,3
+116,Villa Italia,3
+117,Barrio Brasilia,4
+118,Barrio Belencito,4
+119,Barrio Brasilia Nueva,4
+120,Barrio Cincuentenario,4
+121,Barrio El Prado,4
+122,Barrio Gaitán,4
+123,Barrio Miraflores,4
+124,Barrio Miraflores Bajo,4
+125,Barrio Obrero,4
+126,Barrio Popular,4
+127,Barrio Santa Fe,4
+128,Barrio Santa Helena,4
+129,Barrio Santander,4
+130,El Refugio,4
+131,San José Sur,4
+132,Sector Boyacá,4
+133,Villa del Café,4
+134,Villa Juliana,4
+135,1 de Mayo,5
+136,Artesanos,5
+137,Barrio 7 de Agosto,5
+138,Barrio Berlín,5
+139,Barrio El Recreo,5
+140,Barrio Kennedy,5
+141,Barrio La Unión,5
+142,Barrio Monteprado,5
+143,Barrio Montevideo,5
+144,Barrio Nueva Libertad,5
+145,Barrio Salazar,5
+146,Barrio Villa Liliana,5
+147,Casas Fiscales,5
+148,La Anunciación,5
+149,Montevideo Bajo,5
+150,Nuevo Recreo,5
+151,Palmares del Recreo,5
+152,Urbanización El Silencio I,5
+153,Urbanización El Silencio II,5
+154,Barrio La Clarita,6
+155,Barrio La Patria,6
+156,Barrio Las Américas,6
+157,Barrio Los Cámbulos,6
+158,Barrio Quindío,6
+159,Barrio Universal,6
+160,Barrio San José,6
+161,Carolina I,6
+162,Condominio San José de La Sierra,6
+163,Conjunto Residencial Aldea de Los Comuneros,6
+164,Conjunto Residencial Villa Jardín,6
+165,El Parque I,6
+166,El Parque II,6
+167,Gustavo Rojas Pinilla I,6
+168,Gustavo Rojas Pinilla II,6
+169,La Montaña,6
+170,Los Almendros,6
+171,Los Andes I,6
+172,Quintas de Juliana,6
+173,Rincón de Los Andes,6
+174,Santa Sofía,6
+175,Urbanización Altos de La Pavona,6
+176,Urbanización El Cortijo,6
+177,Urbanización La Irlanda,6
+178,Urbanización La Pavona,6
+179,Urbanización Monteblanco I Etapa,6
+180,Urbanización Monteblanco II Etapa,6
+181,Urbanización Monteblanco III Etapa,6
+182,Urbanización Quintas de Los Andes,6
+183,Urbanización San Andrés,6
+184,Urbanización Villa Andrea,6
+185,Vaguita de Tigreros,6
+186,Villa Carolina II,6
+187,Villa Celmira,6
+188,Villa de Las Américas,6
+189,Villa Ximena,6
+190,Barrio Alberto Zuleta,7
+191,Barrio Patio Bonito Alto,7
+192,Barrio Rincón Santo,7
+193,Barrio San Fernando,7
+194,Barrio San Nicolás,7
+195,Barrio Uribe,7
+196,Barrio Vélez,7
+197,Condominio La Aldea,7
+198,Condominio Torres del Río,7
+199,Conjunto Residencial Sotavento,7
+200,Guayaquil Alto,7
+201,La Florida,7
+202,Sector Centro,7
+203,Sector Parque Valencia,7
+204,Urbanización María Cristina I Etapa,7
+205,Urbanización María Cristina II Etapa,7
+206,Urbanización María Cristina III Etapa,7
+207,Barrio Ahitamara,8
+208,Barrio Corbones,8
+209,Barrio La Divisa,8
+210,Barrio La Esperanza,8
+211,Barrio Las Mercedes,8
+212,Barrio Tigreros,8
+213,El Berlín,8
+214,El Limonar I Etapa,8
+215,El Limonar II Etapa,8
+216,El Limonar III Etapa,8
+217,El Limonar IV Etapa,8
+218,El Paraíso,8
+219,Francisco José de Caldas,8
+220,Jubileo,8
+221,Las Colinas,8
+222,Libertadores,8
+223,Nuevo Berlín,8
+224,Piamonte,8
+225,Urbanización Altos de La Calleja,8
+226,Urbanización Centenario,8
+227,Urbanización Villa Inglesa,8
+228,Villa Sofía,8
+229,Altos del Niágara,9
+230,Bajo Niágara,9
+231,Barrio Las 60 Casas,9
+232,Barrio Los Álamos,9
+233,Barrio Modelo,9
+234,Barrio Vieja Libertad,9
+235,Ciudadela Sorrento,9
+236,Conjunto El Remanso,9
+237,Conjunto Residencial Nisa Bulevar,9
+238,Conjunto Residencial Palmas del Modelo,9
+239,Conjunto Residencial Guayacanes,9
+240,Edificio Alto de Las Palmas,9
+241,Edificio Torres del Granada,9
+242,Gran Bretaña,9
+243,Granada,9
+244,La Arboleda,9
+245,La Cabaña,9
+246,Las Palmas,9
+247,Quintas del Yulima,9
+248,Rincón de Yulima,9
+249,Yulima I,9
+250,Yulima II,9
+251,Yulima III,9
+252,Asentamiento Los Fundadores,10
+253,Barrio Alcázar,10
+254,Barrio El Nogal,10
+255,Barrio Fundadores,10
+256,Barrio Galán,10
+257,Barrio La Campiña,10
+258,Barrio La Lorena,10
+259,Barrio La Nueva Cecilia,10
+260,Barrio La Suiza,10
+261,Barrio Laureles,10
+262,Barrio Los Profesionales,10
+263,Barrio Mercedes del Norte,10
+264,Barrio Nueva Cecilia,10
+265,Barrio Providencia,10
+266,Barrio Salvador Allende,10
+267,Bloques Palmas de Sorrento,10
+268,Ciudadela Quimbaya,10
+269,Condominio Altos del Bosque,10
+270,Condominio Caminos de Calay,10
+271,Condominio El Alcázar,10
+272,Condominio El Molino,10
+273,Condominio El Palmar,10
+274,Condominio La Hacienda,10
+275,Conjunto Cerrado Caminos de San Lorenzo,10
+276,Conjunto Multifamiliar Providencia,10
+277,Conjunto Residencial Alejandría,10
+278,Conjunto Residencial Bosques de Palermo,10
+279,Conjunto Residencial Bosques de San Martín,10
+280,Conjunto Residencial Bulevar del Coliseo,10
+281,Conjunto Residencial Casa Loma,10
+282,Conjunto Residencial Coinca,10
+283,Conjunto Residencial El Retiro,10
+284,Conjunto Residencial Jardín de Las Mercedes,10
+285,Conjunto Residencial La Abadía,10
+286,Conjunto Residencial La Alquería,10
+287,Conjunto Residencial La Estancia,10
+288,Conjunto Residencial La Hacienda Palmacera,10
+289,Conjunto Residencial Las Lomas,10
+290,Conjunto Residencial Los Andes,10
+291,Conjunto Residencial Pasadena Country,10
+292,Conjunto Residencial Plazoleta Andina,10
+293,Conjunto Residencial Portal de La Colonia,10
+294,Conjunto Residencial Rincón de Andalucía,10
+295,Conjunto Residencial Torres de Marfil,10
+296,Conjunto Residencial Torres del Alcázar,10
+297,Conjunto Residencial Santillana del Mar,10
+298,Conjunto Residencial Rincón de La Samaria,10
+299,Parque Residencial Las Veraneras,10
+300,Proviteq Unidad I,10
+301,Proviteq Unidad II,10
+302,Proviteq Unidad III,10
+303,Proviteq Unidad IV,10
+304,Proviteq Unidad V,10
+305,Sector Bavaria,10
+306,Simón Bolívar,10
+307,Torres Providencia I,10
+308,Torres Providencia II,10
+309,Urbanización Bosques de Viena,10
+310,Urbanización La Aurora,10
+311,Urbanización La Mariela,10
+312,Urbanización Los Tulipanes,10

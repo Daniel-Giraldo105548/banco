@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registrar Cliente – Banco</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f8fa;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h3 class="text-center mb-4"><i class="bi bi-person-plus"></i> Registrar Cliente</h3>
+    <form id="registerClienteForm">
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="nombre" required>
+      </div>
+      <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input type="text" class="form-control" id="apellido" required>
+      </div>
+      <div class="mb-3">
+        <label for="documento" class="form-label">Documento</label>
+        <input type="text" class="form-control" id="documento" required>
+      </div>
+      <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input type="text" class="form-control" id="telefono">
+      </div>
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo</label>
+        <input type="email" class="form-control" id="correo">
+      </div>
+      <div class="mb-3">
+        <label for="direccion" class="form-label">Dirección</label>
+        <input type="text" class="form-control" id="direccion">
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Registrar Cliente</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("registerClienteForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const clienteData = {
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        documento: document.getElementById("documento").value,
+        telefono: document.getElementById("telefono").value,
+        correo: document.getElementById("correo").value,
+        direccion: document.getElementById("direccion").value
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/cliente/registrar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(clienteData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Cliente registrado con éxito');
+          // Redirigir a la vista de creación de usuario pasando el cliente_id
+          const clienteId = data.resultado.cliente_id;
+          window.location.href = `/publica/vista_usuario/crear_usuario.html?cliente_id=${clienteId}`;
+        } else {
+          alert(data.mensaje || 'Error en el registro');
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

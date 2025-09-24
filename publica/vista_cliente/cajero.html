@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cajero Digital</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .cajero-card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 350px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .saldo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .btn-cajero {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    input[type="number"] {
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cajero-card">
+  <h3 class="text-center mb-3">Cajero Digital</h3>
+  <div class="saldo" id="saldo">Saldo: $0</div>
+
+  <div class="mb-3">
+    <label for="monto" class="form-label">Monto</label>
+    <input type="number" class="form-control" id="monto" placeholder="Ingresa el monto">
+  </div>
+
+  <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
+  <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
+  <button class="btn btn-primary btn-cajero" id="consultar">Consultar Saldo</button>
+</div>
+
+<script>
+  // Simulamos un saldo inicial
+  let saldo = 0;
+
+  const saldoDiv = document.getElementById("saldo");
+  const montoInput = document.getElementById("monto");
+
+  function actualizarSaldo() {
+    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
+  }
+
+  document.getElementById("depositar").addEventListener("click", () => {
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    saldo += monto;
+    actualizarSaldo();
+    montoInput.value = "";
+  });
+
+  document.getElementById("retirar").addEventListener("click", () => {
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    if (monto > saldo) {
+      alert("Saldo insuficiente");
+      return;
+    }
+    saldo -= monto;
+    actualizarSaldo();
+    montoInput.value = "";
+  });
+
+  document.getElementById("consultar").addEventListener("click", () => {
+    alert("Tu saldo actual es: $" + saldo.toFixed(2));
+  });
+
+  // Inicializamos
+  actualizarSaldo();
+</script>
+
+</body>
+</html>
