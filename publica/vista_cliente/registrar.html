@@ -127,7 +127,7 @@
 
       try {
         // Registrar cliente en la base de datos
-        const resCliente = await fetch('http://localhost:3000/api/cliente/registrar', {
+        const resCliente = await fetch('api/cliente/registrar', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(clienteData)
