@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Departamentos – Banco</title>
+  <!-- Bootstrap CSS -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.0/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+  >
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" 
+    rel="stylesheet"
+  >
+  <style>
+    :root {
+      --bs-primary: #0275d8;
+      --bs-secondary: #f5f8fa;
+    }
+    body {
+      background-color: var(--bs-secondary);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .navbar-custom {
+      background-color: var(--bs-primary);
+    }
+    .navbar-custom .navbar-brand {
+      color: #fff;
+    }
+    .departamento-card {
+      transition: transform .2s, box-shadow .2s;
+    }
+    .departamento-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/vista_departamento/panel_departamentos.html">Panel Departamentos</a>
+    </div>
+  </nav>
+
+  <!-- Grid de Departamentos -->
+  <div class="container mt-5 pt-4">
+    <h2 class="mb-4 text-center">Departamentos Registrados</h2>
+    <div class="row" id="departamentosGrid">
+      <!-- Cards de departamentos se insertan aquí -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center p-3 mt-5" style="background-color: var(--bs-primary); color: #fff;">
+    &copy; 2025 Mi Banco – Departamentos
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    async function cargarDepartamentos() {
+      try {
+        const response = await fetch("/api/departamento/listar");
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.mensaje || "Error al cargar departamentos");
+          return;
+        }
+
+        const grid = document.getElementById("departamentosGrid");
+        grid.innerHTML = "";
+
+        data.resultado.forEach(departamento => {
+          const card = `
+            <div class="col-md-4 mb-4">
+              <div class="card departamento-card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <i class="bi bi-building text-primary"></i> 
+                    ${departamento.nombre}
+                  </h5>
+                  <p class="card-text">
+                    <strong>ID:</strong> ${departamento.id_departamento}
+                  </p>
+                </div>
+              </div>
+            </div>
+          `;
+          grid.innerHTML += card;
+        });
+
+      } catch (error) {
+        alert("Error al conectar con el servidor");
+        console.error(error);
+      }
+    }
+
+    // Cargar departamentos al abrir la página
+    window.onload = cargarDepartamentos;
+  </script>
+
+</body>
+</html>
