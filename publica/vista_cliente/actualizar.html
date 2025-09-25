@@ -42,7 +42,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/publica/vista_cliente/panel_clientes.html">
+      <a class="navbar-brand" href="/vista_cliente/panel_clientes.html">
         <i class="bi bi-people"></i> Gestión de Clientes
       </a>
     </div>
@@ -114,7 +114,8 @@
       const id = document.getElementById("cliente_id").value;
 
       try {
-        const res = await fetch(`api/cliente/${id}`);
+        // ✅ Ruta relativa
+        const res = await fetch(`/api/cliente/${id}`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -151,7 +152,8 @@
       };
 
       try {
-        const res = await fetch(`cliente/actualizar/${id}`, {
+        // Ruta relativa con barra inicial
+        const res = await fetch(`/api/cliente/actualizar/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(clienteData)
