@@ -114,7 +114,7 @@
       const id = document.getElementById("cliente_id").value;
 
       try {
-        const res = await fetch(`http://localhost:3000/api/cliente/${id}`);
+        const res = await fetch(`api/cliente/${id}`);
         const data = await res.json();
 
         if (!res.ok) {
