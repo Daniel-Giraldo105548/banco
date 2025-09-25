@@ -42,7 +42,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/publica/vista_cliente/panel_clientes.html">Panel Clientes</a>
+      <a class="navbar-brand" href="/vista_cliente/panel_clientes.html">Panel Clientes</a>
     </div>
   </nav>
 
@@ -63,7 +63,7 @@
   <script>
     async function cargarClientes() {
       try {
-        const response = await fetch("http://localhost:3000/api/cliente/listar");
+        const response = await fetch("/api/cliente/listar");
         const data = await response.json();
 
         if (!response.ok) {
