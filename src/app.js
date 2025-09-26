@@ -11,6 +11,9 @@ const usuario_ruta = require('./rutas/ruta_usuario');
 const corresponsal_ruta = require('./rutas/ruta_correponsal');
 const departamento_ruta = require('./rutas/ruta_departartamento');
 const auth_ruta = require('./rutas/ruta_auth'); //  Nueva ruta de login/register
+const municipio_ruta = require('./rutas/ruta_municipio');
+const comuna_ruta = require('./rutas/ruta_comuna');
+
 
 app.use(express.json());
 app.use(cors());
@@ -40,7 +43,9 @@ app.use('/api/barrio', barrio_ruta);
 app.use('/api/usuario', usuario_ruta);
 app.use('/api/corresponsal', corresponsal_ruta);
 app.use('/api/departamento', departamento_ruta);
-app.use('/api/auth', auth_ruta); // 👈 Aquí se montan login y register
+app.use('/api/auth', auth_ruta); // Aquí se montan login y register
+app.use('/api/municipio', municipio_ruta);
+app.use('/api/comuna', comuna_ruta);
 
 /* -------------------------
    Manejo de errores

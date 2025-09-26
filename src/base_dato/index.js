@@ -3,9 +3,11 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const defineCliente = require('../modelos/cliente');
 const defineUsuario = require('../modelos/usuario');
+const defineDepartamento = require('../modelos/departamento');
+const defineMunicipio = require('../modelos/municipio');
 const defineBarrio = require('../modelos/barrio');
 const defineCorresponsal = require('../modelos/corresponsal');
-const defineDepartamento = require('../modelos/departamento');
+const defineComuna = require('../modelos/comua');
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -27,20 +29,26 @@ const sequelize = new Sequelize(
 // Definición de modelos
 const Cliente = defineCliente(sequelize, DataTypes);
 const Departamento = defineDepartamento(sequelize, DataTypes);
+const Municipio = defineMunicipio(sequelize, DataTypes);
 const Barrio = defineBarrio(sequelize, DataTypes);
 const Usuario = defineUsuario(sequelize, DataTypes);
 const Corresponsal = defineCorresponsal(sequelize, DataTypes);
+const Comuna = defineComuna(sequelize, DataTypes);
 
 // Relaciones
 Usuario.belongsTo(Cliente, { foreignKey: 'cliente_id' });
 Cliente.hasMany(Usuario, { foreignKey: 'cliente_id' });
 Corresponsal.belongsTo(Barrio, { foreignKey: 'id_barrio' });
 Barrio.hasMany(Corresponsal, { foreignKey: 'id_barrio' });
+Municipio.belongsTo(Departamento, { foreignKey: 'id_departamento' });
+Departamento.hasMany(Municipio, { foreignKey: 'id_departamento' });
+Comuna.belongsTo(Municipio, { foreignKey: 'id_municipio' });
+Municipio.hasMany(Comuna, { foreignKey: 'id_municipio' });
 
 // Probar conexión
 sequelize.authenticate()
-  .then(() => console.log('✅ Conectado a la base de datos.'))
-  .catch(err => console.error('❌ No se pudo conectar a la base de datos:', err));
+  .then(() => console.log('Conectado a la base de datos.'))
+  .catch(err => console.error('No se pudo conectar a la base de datos:', err));
 
 module.exports = {
   Cliente,
@@ -48,5 +56,7 @@ module.exports = {
   Usuario,
   Corresponsal,
   Departamento,
+  Municipio,
+  Comuna,
   sequelize
 };
