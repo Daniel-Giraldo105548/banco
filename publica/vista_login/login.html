@@ -77,13 +77,14 @@
 
           alert(`Bienvenido ${data.usuario.username}`);
 
+
           // Redirigir según rol
           if (data.usuario.rol === "ADMIN_DB") {
             window.location.href = "/vista_admin/menu_principal.html";
           } else if (data.usuario.rol === "CLIENTE") {
             window.location.href = "/vista_cliente/cajero.html";
           } else if (data.usuario.rol === "BACKOFFICE") {
-            window.location.href = "/vista_admin_db/menu_admin_db.html";
+            window.location.href = "/vista_admi_db/menu_admin_db.html";
           } else {
             window.location.href = "/vista_admin/menu_principal.html";
           }
