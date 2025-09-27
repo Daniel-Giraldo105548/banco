@@ -38,7 +38,7 @@ app.use(express.static(path.join(__dirname, '../publica')));
 
 // Ruta raíz: devuelve tu HTML específico
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../publica/vista_municipio/inicio.html'));
+  res.sendFile(path.join(__dirname, '../publica/inicio.html'));
 });
 
 /* -------------------------
