@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Panel Administrador – Ubicaciones</title>
+  <title>Panel Departamentos – Banco</title>
   <!-- Bootstrap CSS -->
   <link 
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.0/dist/css/bootstrap.min.css" 
@@ -36,7 +36,7 @@
       margin-top: 100px;
     }
     .menu-card {
-      width: 300px;
+      width: 250px;
       background: #fff;
       border-radius: 1rem;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
@@ -49,7 +49,7 @@
       transform: translateY(-5px);
     }
     .menu-card i {
-      font-size: 3rem;
+      font-size: 2.5rem;
       color: var(--bs-primary);
       margin-bottom: 1rem;
     }
@@ -67,59 +67,59 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Panel Administrador</a>
+      <a class="navbar-brand" href="#">Panel de Departamentos</a>
     </div>
-  </nav>  
+  </nav>
 
   <!-- Menú -->
   <div class="container menu-container">
-    <h2 class="mb-4">Opciones de Ubicación</h2>
+    <h2 class="mb-4">Gestión de Departamentos</h2>
     <div class="row justify-content-center">
-      
-      <!-- Gestión de Departamento -->
-      <div class="col-md-4">
+
+      <!-- Registrar Departamento -->
+      <div class="col-md-3">
         <div class="menu-card">
-          <i class="bi bi-building"></i>
-          <h5>Departamento</h5>
-          <p>Agregar, listar, actualizar o eliminar departamentos.</p>
-          <a href="/vista_departamento/panel_control.html" class="btn btn-primary w-100">
-            <i class="bi bi-plus-square"></i> Ir a Departamento
+          <i class="bi bi-plus-circle"></i>
+          <h5>Registrar</h5>
+          <p>Agregar un nuevo departamento.</p>
+          <a href="/vista_departamento/registrar.html" class="btn btn-success w-100">
+            <i class="bi bi-person-plus"></i> Registrar
           </a>
         </div>
       </div>
 
-      <!-- Gestión de Municipio -->
-      <div class="col-md-4">
+      <!-- Listar Departamentos -->
+      <div class="col-md-3">
         <div class="menu-card">
-          <i class="bi bi-map"></i>
-          <h5>Municipio</h5>
-          <p>Administrar municipios asociados a departamentos.</p>
-          <a href="/vista_municipio/panel_control.html" class="btn btn-primary w-100">
-            <i class="bi bi-geo-alt"></i> Ir a Municipio
+          <i class="bi bi-list-ul"></i>
+          <h5>Listar</h5>
+          <p>Ver todos los departamentos registrados.</p>
+          <a href="/vista_departamento/listar.html" class="btn btn-primary w-100">
+            <i class="bi bi-eye"></i> Listar
           </a>
         </div>
       </div>
 
-      <!-- Gestión de Comuna -->
-      <div class="col-md-4">
+      <!-- Actualizar Departamento -->
+      <div class="col-md-3">
         <div class="menu-card">
-          <i class="bi bi-geo-fill"></i>
-          <h5>Comuna</h5>
-          <p>Registrar, listar o modificar comunas.</p>
-          <a href="/vista_comuna/panel_control.html" class="btn btn-primary w-100">
-            <i class="bi bi-pin-map"></i> Ir a Comuna
+          <i class="bi bi-pencil-square"></i>
+          <h5>Actualizar</h5>
+          <p>Actualizar datos de un departamento.</p>
+          <a href="/vista_departamento/actualizar.html" class="btn btn-warning w-100">
+            <i class="bi bi-arrow-repeat"></i> Actualizar
           </a>
         </div>
       </div>
 
-      <!-- Gestión de Barrio -->
-      <div class="col-md-4">
+      <!-- Eliminar Departamento -->
+      <div class="col-md-3">
         <div class="menu-card">
-          <i class="bi bi-house"></i>
-          <h5>Barrio</h5>
-          <p>Administrar barrios asociados a comunas.</p>
-          <a href="/vista_barrio/panel_control.html" class="btn btn-primary w-100">
-            <i class="bi bi-house-door"></i> Ir a Barrio
+          <i class="bi bi-trash"></i>
+          <h5>Eliminar</h5>
+          <p>Eliminar un departamento existente.</p>
+          <a href="/vista_departamento/eliminar.html" class="btn btn-danger w-100">
+            <i class="bi bi-x-circle"></i> Eliminar
           </a>
         </div>
       </div>
@@ -129,7 +129,7 @@
 
   <!-- Footer -->
   <footer>
-    &copy; 2025 Mi Banco – Panel Administrador
+    &copy; 2025 Mi Banco – Panel de Departamentos
   </footer>
 
 </body>
