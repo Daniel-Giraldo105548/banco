@@ -13,7 +13,7 @@ const departamento_ruta = require('./rutas/ruta_departartamento');
 const auth_ruta = require('./rutas/ruta_auth'); //  Nueva ruta de login/register
 const municipio_ruta = require('./rutas/ruta_municipio');
 const comuna_ruta = require('./rutas/ruta_comuna');
-
+const cuenta_ruta = require('./rutas/ruta_cuenta');
 
 app.use(express.json());
 app.use(cors());
@@ -46,6 +46,7 @@ app.use('/api/departamento', departamento_ruta);
 app.use('/api/auth', auth_ruta); // Aquí se montan login y register
 app.use('/api/municipio', municipio_ruta);
 app.use('/api/comuna', comuna_ruta);
+app.use('/api/cuenta', cuenta_ruta);
 
 /* -------------------------
    Manejo de errores
