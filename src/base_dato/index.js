@@ -9,6 +9,8 @@ const defineBarrio = require('../modelos/barrio');
 const defineCorresponsal = require('../modelos/corresponsal');
 const defineComuna = require('../modelos/comua');
 const defineCuenta = require('../modelos/cuenta');
+const defineTransaccion = require('../modelos/transaccion');
+const defineTipoTransaccion = require('../modelos/tipo_transaccion');
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -36,8 +38,8 @@ const Usuario = defineUsuario(sequelize, DataTypes);
 const Corresponsal = defineCorresponsal(sequelize, DataTypes);
 const Comuna = defineComuna(sequelize, DataTypes);
 const Cuenta = defineCuenta(sequelize, DataTypes);
-
-// Relaciones
+const Transaccion = defineTransaccion(sequelize, DataTypes);
+const TipoTransaccion = defineTipoTransaccion(sequelize, DataTypes);
 
 // Cliente ↔ Usuario
 Usuario.belongsTo(Cliente, { foreignKey: 'cliente_id' });
@@ -64,6 +66,21 @@ Cuenta.belongsTo(Cliente, { foreignKey: 'id_cliente' });
 Cliente.hasMany(Cuenta, { foreignKey: 'id_cliente' });
 
 
+// Transaccion ↔ Cuenta (origen y destino)
+Transaccion.belongsTo(Cuenta, { foreignKey: 'id_cuenta_origen', as: 'cuentaOrigen' });
+Cuenta.hasMany(Transaccion, { foreignKey: 'id_cuenta_origen', as: 'transaccionesOrigen' });
+
+Transaccion.belongsTo(Cuenta, { foreignKey: 'id_cuenta_destino', as: 'cuentaDestino' });
+Cuenta.hasMany(Transaccion, { foreignKey: 'id_cuenta_destino', as: 'transaccionesDestino' });
+
+// Transaccion ↔ Corresponsal
+Transaccion.belongsTo(Corresponsal, { foreignKey: 'id_corresponsal', as: 'corresponsal' });
+Corresponsal.hasMany(Transaccion, { foreignKey: 'id_corresponsal', as: 'transacciones' });
+
+// Transaccion ↔ TipoTransaccion (opcional)
+Transaccion.belongsTo(TipoTransaccion, { foreignKey: 'id_tipo_transaccion', as: 'tipoTransaccion' });
+TipoTransaccion.hasMany(Transaccion, { foreignKey: 'id_tipo_transaccion', as: 'transacciones' });
+
 // Probar conexión
 sequelize.authenticate()
   .then(() => console.log('Conectado a la base de datos.'))
@@ -78,5 +95,7 @@ module.exports = {
   Municipio,
   Comuna,
   Cuenta,
+  Transaccion,
+  TipoTransaccion,
   sequelize
 };

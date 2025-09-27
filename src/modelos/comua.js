@@ -1,4 +1,4 @@
-// modelos/comuna.js
+
 const defineComuna = (sequelize, DataTypes) => {
   return sequelize.define('Comuna', {
     id_comuna: {
