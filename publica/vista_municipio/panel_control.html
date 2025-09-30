@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel Municipios – Banco</title>
+  <!-- Bootstrap CSS -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.0/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+  >
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" 
+    rel="stylesheet"
+  >
+  <style>
+    :root {
+      --bs-primary: #0275d8;
+      --bs-secondary: #f5f8fa;
+    }
+    body {
+      background-color: var(--bs-secondary);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .navbar-custom {
+      background-color: var(--bs-primary);
+    }
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: #fff;
+    }
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 100px;
+    }
+    .menu-card {
+      width: 250px;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 2rem;
+      margin: 1rem;
+      transition: transform .2s;
+    }
+    .menu-card:hover {
+      transform: translateY(-5px);
+    }
+    .menu-card i {
+      font-size: 2.5rem;
+      color: var(--bs-primary);
+      margin-bottom: 1rem;
+    }
+    footer {
+      margin-top: 50px;
+      background: var(--bs-primary);
+      color: #fff;
+      padding: 15px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Panel de Municipios</a>
+    </div>
+  </nav>
+
+  <!-- Menú -->
+  <div class="container menu-container">
+    <h2 class="mb-4">Gestión de Municipios</h2>
+    <div class="row justify-content-center">
+
+      <!-- Registrar Municipio -->
+      <div class="col-md-3">
+        <div class="menu-card">
+          <i class="bi bi-plus-circle"></i>
+          <h5>Registrar</h5>
+          <p>Agregar un nuevo municipio.</p>
+          <a href="/vista_municipio/registrar.html" class="btn btn-success w-100">
+            <i class="bi bi-person-plus"></i> Registrar
+          </a>
+        </div>
+      </div>
+
+      <!-- Listar Municipios -->
+      <div class="col-md-3">
+        <div class="menu-card">
+          <i class="bi bi-list-ul"></i>
+          <h5>Listar</h5>
+          <p>Ver todos los municipios registrados.</p>
+          <a href="/vista_municipio/listar.html" class="btn btn-primary w-100">
+            <i class="bi bi-eye"></i> Listar
+          </a>
+        </div>
+      </div>
+
+      <!-- Actualizar Municipio -->
+      <div class="col-md-3">
+        <div class="menu-card">
+          <i class="bi bi-pencil-square"></i>
+          <h5>Actualizar</h5>
+          <p>Actualizar datos de un municipio.</p>
+          <a href="/vista_municipio/actualizar.html" class="btn btn-warning w-100">
+            <i class="bi bi-arrow-repeat"></i> Actualizar
+          </a>
+        </div>
+      </div>
+
+      <!-- Eliminar Municipio -->
+      <div class="col-md-3">
+        <div class="menu-card">
+          <i class="bi bi-trash"></i>
+          <h5>Eliminar</h5>
+          <p>Eliminar un municipio existente.</p>
+          <a href="/vista_municipio/eliminar.html" class="btn btn-danger w-100">
+            <i class="bi bi-x-circle"></i> Eliminar
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Mi Banco – Panel de Municipios
+  </footer>
+
+</body>
+</html>
