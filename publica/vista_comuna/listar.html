@@ -66,7 +66,6 @@
               <th>ID Comuna</th>
               <th>Nombre</th>
               <th>ID Municipio</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody id="comunaTableBody">
@@ -100,14 +99,6 @@
               <td>${comuna.id_comuna}</td>
               <td>${comuna.nombre}</td>
               <td>${comuna.id_municipio}</td>
-              <td>
-                <a href="/vista_comuna/actualizar_comuna.html?id=${comuna.id_comuna}" class="btn btn-warning btn-sm">
-                  <i class="bi bi-pencil-square"></i> Editar
-                </a>
-                <a href="/vista_comuna/eliminar_comuna.html?id=${comuna.id_comuna}" class="btn btn-danger btn-sm">
-                  <i class="bi bi-trash"></i> Eliminar
-                </a>
-              </td>
             </tr>
           `;
           tbody.innerHTML += row;
