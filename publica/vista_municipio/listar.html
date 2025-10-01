@@ -62,57 +62,40 @@
   <!-- Scripts -->
   <script>
     async function cargarMunicipios() {
-      const grid = document.getElementById("municipiosGrid");
-
       try {
-        grid.innerHTML = `
-          <div class="col-12 text-center text-primary">
-            <div class="spinner-border" role="status"></div>
-            <p>Cargando municipios...</p>
-          </div>
-        `;
-
         const response = await fetch("/api/municipio/listar");
         const data = await response.json();
 
         if (!response.ok) {
-          grid.innerHTML = `<div class="col-12 text-danger text-center">Error al cargar municipios</div>`;
+          alert(data.mensaje || "Error al cargar municipios");
           return;
         }
 
-        if (data.resultado.length === 0) {
-          grid.innerHTML = `
-            <div class="col-12 text-center text-muted">
-              <i class="bi bi-info-circle"></i> No hay municipios registrados
-            </div>
-          `;
-          return;
-        }
-
+        const grid = document.getElementById("municipiosGrid");
         grid.innerHTML = "";
 
         data.resultado.forEach(municipio => {
-          const card = document.createElement("div");
-          card.className = "col-md-4 mb-4";
-          card.innerHTML = `
-            <div class="card municipio-card h-100">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <i class="bi bi-geo-alt text-primary"></i> 
-                  ${municipio.nombre}
-                </h5>
-                <p class="card-text">
-                  <strong>ID Municipio:</strong> ${municipio.id_municipio}<br>
-                  <strong>ID Departamento:</strong> ${municipio.id_departamento}
-                </p>
+          const card = `
+            <div class="col-md-4 mb-4">
+              <div class="card municipio-card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <i class="bi bi-geo-alt text-primary"></i> 
+                    ${municipio.nombre}
+                  </h5>
+                  <p class="card-text">
+                    <strong>ID Municipio:</strong> ${municipio.id_municipio}<br>
+                    <strong>ID Departamento:</strong> ${municipio.id_departamento}
+                  </p>
+                </div>
               </div>
             </div>
           `;
-          grid.appendChild(card);
+          grid.innerHTML += card;
         });
 
       } catch (error) {
-        grid.innerHTML = `<div class="col-12 text-danger text-center">Error al conectar con el servidor</div>`;
+        alert("Error al conectar con el servidor");
         console.error(error);
       }
     }
