@@ -6,30 +6,33 @@ const defineCuenta = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         numero_cuenta: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.STRING(7), // será un string de 7 dígitos
+            allowNull: false,
+            unique: true
         },
         estado: {
             type: DataTypes.BOOLEAN,
-            allowNull: true
+            allowNull: false,
+            defaultValue: true
         },
         saldo: {
             type: DataTypes.DECIMAL,
-            allowNull: true
+            allowNull: false
         },
         fecha_apertura: {
             type: DataTypes.DATEONLY,
-            allowNull: true
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         },
         tipo_cuenta: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         },
         id_cliente: {
             type: DataTypes.INTEGER,
-            allowNull: true,
+            allowNull: false,
             references: {
-                model: 'cliente', 
+                model: 'cliente',
                 key: 'cliente_id'
             }
         }

@@ -2,38 +2,30 @@ const Joi = require("joi");
 const { Cuenta, Cliente } = require("../base_dato/index");
 
 // ============================
-// Validador con Joi
+// Validador con Joi (ya no incluye numero_cuenta, estado, fecha_apertura)
 // ============================
 const validadorCuenta = Joi.object({
-  numero_cuenta: Joi.string().max(50).required().messages({
-    "string.base": "El número de cuenta debe ser un texto.",
-    "string.empty": "El número de cuenta es obligatorio.",
-    "string.max": "El número de cuenta no puede tener más de {#limit} caracteres.",
-    "any.required": "El número de cuenta es obligatorio.",
-  }),
-  estado: Joi.boolean().required().messages({
-    "boolean.base": "El estado debe ser verdadero o falso.",
-    "any.required": "El estado es obligatorio.",
-  }),
   saldo: Joi.number().precision(2).required().messages({
     "number.base": "El saldo debe ser un número.",
     "any.required": "El saldo es obligatorio.",
   }),
-  fecha_apertura: Joi.date().required().messages({
-    "date.base": "La fecha de apertura debe ser una fecha válida.",
-    "any.required": "La fecha de apertura es obligatoria.",
-  }),
-  tipo_cuenta: Joi.string().max(50).required().messages({
+  tipo_cuenta: Joi.string().valid("Ahorros", "Corriente").required().messages({
     "string.base": "El tipo de cuenta debe ser un texto.",
-    "string.empty": "El tipo de cuenta es obligatorio.",
-    "string.max": "El tipo de cuenta no puede tener más de {#limit} caracteres.",
     "any.required": "El tipo de cuenta es obligatorio.",
+    "any.only": "El tipo de cuenta debe ser Ahorros o Corriente."
   }),
   id_cliente: Joi.number().integer().required().messages({
     "number.base": "El id_cliente debe ser un número entero.",
     "any.required": "El id_cliente es obligatorio.",
   }),
 });
+
+// ============================
+// Función para generar número aleatorio de 7 dígitos
+// ============================
+function generarNumeroCuenta() {
+  return Math.floor(1000000 + Math.random() * 9000000).toString();
+}
 
 // ============================
 // POST - Registrar cuenta
@@ -49,7 +41,7 @@ const registrarCuenta = async (req, res) => {
       });
     }
 
-    const { numero_cuenta, estado, saldo, fecha_apertura, tipo_cuenta, id_cliente } = req.body;
+    const { saldo, tipo_cuenta, id_cliente } = req.body;
 
     // Validar cliente
     const cliente = await Cliente.findByPk(id_cliente);
@@ -60,14 +52,22 @@ const registrarCuenta = async (req, res) => {
       });
     }
 
+    // Generar número único de cuenta
+    let numeroCuenta;
+    let cuentaExistente;
+    do {
+      numeroCuenta = generarNumeroCuenta();
+      cuentaExistente = await Cuenta.findOne({ where: { numero_cuenta: numeroCuenta } });
+    } while (cuentaExistente);
+
     // Crear cuenta
     const nuevaCuenta = await Cuenta.create({
-      numero_cuenta,
-      estado,
+      numero_cuenta: numeroCuenta,
       saldo,
-      fecha_apertura,
       tipo_cuenta,
       id_cliente,
+      estado: true, // siempre activa
+      fecha_apertura: new Date() // automática
     });
 
     res.status(201).json({
@@ -94,102 +94,7 @@ const listarCuentas = async (req, res) => {
   }
 };
 
-// ============================
-// GET - Obtener cuenta por ID
-// ============================
-const obtenerCuenta = async (req, res) => {
-  try {
-    const { id_cuenta } = req.params;
-    const cuenta = await Cuenta.findByPk(id_cuenta, { include: Cliente });
-
-    if (!cuenta) {
-      return res.status(404).json({
-        mensaje: "Cuenta no encontrada",
-        resultado: null,
-      });
-    }
-
-    res.status(200).json({
-      mensaje: "Cuenta encontrada",
-      resultado: cuenta,
-    });
-  } catch (err) {
-    res.status(500).json({ mensaje: err.message, resultado: null });
-  }
-};
-
-// ============================
-// PUT - Actualizar cuenta
-// ============================
-const actualizarCuenta = async (req, res) => {
-  try {
-    const { id_cuenta } = req.params;
-    const { numero_cuenta, estado, saldo, fecha_apertura, tipo_cuenta, id_cliente } = req.body;
-
-    const cuenta = await Cuenta.findByPk(id_cuenta);
-    if (!cuenta) {
-      return res.status(404).json({
-        mensaje: "Cuenta no encontrada",
-        resultado: null,
-      });
-    }
-
-    if (id_cliente) {
-      const cliente = await Cliente.findByPk(id_cliente);
-      if (!cliente) {
-        return res.status(404).json({
-          mensaje: "El cliente no existe",
-          resultado: null,
-        });
-      }
-    }
-
-    await Cuenta.update(
-      { numero_cuenta, estado, saldo, fecha_apertura, tipo_cuenta, id_cliente },
-      { where: { id_cuenta } }
-    );
-
-    const cuentaActualizada = await Cuenta.findByPk(id_cuenta, { include: Cliente });
-
-    res.status(200).json({
-      mensaje: "Cuenta actualizada",
-      resultado: cuentaActualizada,
-    });
-  } catch (err) {
-    res.status(500).json({ mensaje: err.message, resultado: null });
-  }
-};
-
-// ============================
-// DELETE - Borrar cuenta
-// ============================
-const borrarCuenta = async (req, res) => {
-  try {
-    const { id_cuenta } = req.params;
-
-    const cuenta = await Cuenta.findByPk(id_cuenta);
-    if (!cuenta) {
-      return res.status(404).json({
-        mensaje: "Cuenta no encontrada",
-        resultado: null,
-      });
-    }
-
-    await Cuenta.destroy({ where: { id_cuenta } });
-
-    res.status(200).json({
-      mensaje: "Cuenta eliminada",
-      resultado: null,
-    });
-  } catch (err) {
-    res.status(500).json({ mensaje: err.message, resultado: null });
-  }
-};
-
 module.exports = {
   registrarCuenta,
   listarCuentas,
-  obtenerCuenta,
-  actualizarCuenta,
-  borrarCuenta,
 };
