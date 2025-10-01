@@ -49,4 +49,44 @@
 
     <!-- Tipo de Cuenta -->
     <div class="mb-3">
-      <label for="tipoCuenta" class="form
+      <label for="tipoCuenta" class="form-label">Tipo de Cuenta</label>
+      <select class="form-select" id="tipoCuenta" required>
+        <option value="">Selecciona...</option>
+        <option value="ahorros">Ahorros</option>
+        <option value="corriente">Corriente</option>
+      </select>
+    </div>
+
+    <!-- Botón -->
+    <button type="submit" class="btn btn-primary w-100">
+      <i class="bi bi-check-circle"></i> Registrar Cuenta
+    </button>
+  </form>
+</div>
+
+<script>
+  document.getElementById("formCuenta").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const idCliente = document.getElementById("idCliente").value.trim();
+    const saldo = parseFloat(document.getElementById("saldo").value);
+    const tipoCuenta = document.getElementById("tipoCuenta").value;
+
+    if (!idCliente || isNaN(saldo) || saldo < 0 || !tipoCuenta) {
+      alert("Por favor completa todos los campos correctamente.");
+      return;
+    }
+
+    // Simulación (más adelante lo puedes conectar con tu backend)
+    alert("Cuenta creada exitosamente:\n\n" +
+          "ID Cliente: " + idCliente + "\n" +
+          "Saldo Inicial: $" + saldo.toFixed(2) + "\n" +
+          "Tipo de Cuenta: " + tipoCuenta);
+
+    // Limpiar formulario
+    document.getElementById("formCuenta").reset();
+  });
+</script>
+
+</body>
+</html>
