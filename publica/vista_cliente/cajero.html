@@ -31,7 +31,7 @@
       width: 100%;
       margin-bottom: 0.5rem;
     }
-    input[type="number"] {
+    input, select {
       border-radius: 0.5rem;
     }
   </style>
@@ -47,17 +47,34 @@
     <input type="number" class="form-control" id="monto" placeholder="Ingresa el monto">
   </div>
 
+  <!-- Inputs para transferencia -->
+  <div class="mb-3">
+    <label for="tipoCuenta" class="form-label">Tipo de Cuenta</label>
+    <select id="tipoCuenta" class="form-control">
+      <option value="">Seleccione</option>
+      <option value="Ahorros">Ahorros</option>
+      <option value="Corriente">Corriente</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="numCuenta" class="form-label">Número de Cuenta</label>
+    <input type="text" class="form-control" id="numCuenta" placeholder="Ej: 1234567890">
+  </div>
+
   <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
   <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
+  <button class="btn btn-info btn-cajero" id="transferir">Transferir</button>
   <button class="btn btn-primary btn-cajero" id="consultar">Consultar Saldo</button>
 </div>
 
 <script>
-  // Simulamos un saldo inicial
   let saldo = 0;
 
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
+  const tipoCuentaInput = document.getElementById("tipoCuenta");
+  const numCuentaInput = document.getElementById("numCuenta");
 
   function actualizarSaldo() {
     saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
@@ -89,11 +106,46 @@
     montoInput.value = "";
   });
 
+  document.getElementById("transferir").addEventListener("click", () => {
+    const monto = parseFloat(montoInput.value);
+    const tipoCuenta = tipoCuentaInput.value;
+    const numCuenta = numCuentaInput.value.trim();
+
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    if (monto > saldo) {
+      alert("Saldo insuficiente para transferir");
+      return;
+    }
+    if (tipoCuenta === "") {
+      alert("Selecciona el tipo de cuenta");
+      return;
+    }
+    if (numCuenta === "") {
+      alert("Ingresa un número de cuenta válido");
+      return;
+    }
+
+    saldo -= monto;
+    actualizarSaldo();
+
+    alert("Transferencia exitosa\n" +
+          "Monto: $" + monto.toFixed(2) + "\n" +
+          "Tipo de cuenta: " + tipoCuenta + "\n" +
+          "Número de cuenta: " + numCuenta);
+
+    // limpiar campos
+    montoInput.value = "";
+    tipoCuentaInput.value = "";
+    numCuentaInput.value = "";
+  });
+
   document.getElementById("consultar").addEventListener("click", () => {
     alert("Tu saldo actual es: $" + saldo.toFixed(2));
   });
 
-  // Inicializamos
   actualizarSaldo();
 </script>
 
