@@ -65,7 +65,6 @@
               <th>ID Barrio</th>
               <th>Nombre</th>
               <th>ID Comuna</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody id="barrioTableBody">
@@ -99,14 +98,6 @@
               <td>${barrio.id_barrio}</td>
               <td>${barrio.nombre}</td>
               <td>${barrio.id_comuna}</td>
-              <td>
-                <a href="/vista_barrio/actualizar_barrio.html?id=${barrio.id_barrio}" class="btn btn-warning btn-sm">
-                  <i class="bi bi-pencil-square"></i> Editar
-                </a>
-                <a href="/vista_barrio/eliminar_barrio.html?id=${barrio.id_barrio}" class="btn btn-danger btn-sm">
-                  <i class="bi bi-trash"></i> Eliminar
-                </a>
-              </td>
             </tr>
           `;
           tbody.innerHTML += row;
