@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Listado de Barrios – Banco</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --bs-primary: #0275d8;
+      --bs-body-bg: #f4f8fb;
+    }
+    body {
+      background-color: var(--bs-body-bg);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .navbar-custom {
+      background-color: var(--bs-primary);
+    }
+    .navbar-custom .navbar-brand {
+      color: #fff;
+    }
+    .container {
+      margin-top: 90px;
+    }
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+      background-color: var(--bs-primary);
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #0256a3;
+    }
+    .btn-warning {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/vista_barrio/panel_barrios.html">
+        <i class="bi bi-house-door"></i> Gestión de Barrios
+      </a>
+    </div>
+  </nav>
+
+  <!-- Listado -->
+  <div class="container">
+    <div class="card">
+      <div class="card-header bg-primary text-white text-center">
+        <h4><i class="bi bi-list-ul"></i> Listado de Barrios</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-hover table-striped text-center align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th>ID Barrio</th>
+              <th>Nombre</th>
+              <th>ID Comuna</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="barrioTableBody">
+            <tr>
+              <td colspan="4" class="text-muted">Cargando barrios...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    async function cargarBarrios() {
+      try {
+        const res = await fetch("/api/barrio/listar");
+        const data = await res.json();
+
+        const tbody = document.getElementById("barrioTableBody");
+        tbody.innerHTML = "";
+
+        if (!res.ok || !data.resultado || data.resultado.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="text-danger">No se encontraron barrios</td></tr>';
+          return;
+        }
+
+        data.resultado.forEach(barrio => {
+          const row = `
+            <tr>
+              <td>${barrio.id_barrio}</td>
+              <td>${barrio.nombre}</td>
+              <td>${barrio.id_comuna}</td>
+              <td>
+                <a href="/vista_barrio/actualizar_barrio.html?id=${barrio.id_barrio}" class="btn btn-warning btn-sm">
+                  <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <a href="/vista_barrio/eliminar_barrio.html?id=${barrio.id_barrio}" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i> Eliminar
+                </a>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("barrioTableBody").innerHTML =
+          '<tr><td colspan="4" class="text-danger">Error al conectar con el servidor</td></tr>';
+      }
+    }
+
+    // Cargar al iniciar
+    window.onload = cargarBarrios;
+  </script>
+
+</body>
+</html>
