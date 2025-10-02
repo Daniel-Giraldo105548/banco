@@ -116,11 +116,11 @@
       const data = await res.json();
 
       if (res.ok) {
-        alert("✅ Cuenta creada exitosamente:\nNúmero: " + data.resultado.numero_cuenta);
+        alert("Cuenta creada exitosamente:\nNúmero: " + data.resultado.numero_cuenta);
         document.getElementById("formCuenta").reset();
         document.getElementById("numeroCuenta").value = generarNumeroCuenta(); // nuevo número para siguiente
       } else {
-        alert("❌ Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
+        alert("Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
         console.error(data.resultado);
       }
     } catch (error) {
