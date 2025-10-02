@@ -85,9 +85,9 @@
     const estado = true; // siempre activo
     const saldo = parseFloat(document.getElementById("saldo").value);
     const tipoCuenta = document.getElementById("tipoCuenta").value;
-    const idCliente = parseInt(localStorage.getItem("id_cliente")); // ✅ tomado del login
+    const idCliente = parseInt(localStorage.getItem("id_cliente")); // tomado del login
 
-    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta || isNaN(idCliente)) {
+    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta) {
       alert("Por favor completa todos los campos correctamente.");
       return;
     }
