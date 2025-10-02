@@ -61,7 +61,6 @@
       const password = document.getElementById("password").value;
 
       try {
-        // ahora usamos ruta relativa (funciona local y en Render)
         const res = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -71,12 +70,12 @@
         const data = await res.json();
 
         if (res.ok) {
-          // Guardar token en localStorage
+          // Guardamos en localStorage
           localStorage.setItem("token", data.token);
           localStorage.setItem("rol", data.usuario.rol);
+          localStorage.setItem("id_cliente", data.usuario.id_cliente); // Guardamos id_cliente
 
           alert(`Bienvenido ${data.usuario.username}`);
-
 
           // Redirigir según rol
           if (data.usuario.rol === "ADMIN") {
