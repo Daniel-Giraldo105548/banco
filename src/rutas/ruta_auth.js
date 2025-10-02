@@ -3,8 +3,8 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// Importa tu modelo desde la conexión
-const { Usuario } = require("../base_dato/index");
+// Importa tus modelos desde la conexión
+const { Usuario, Cliente } = require("../base_dato/index");
 
 // =======================
 // LOGIN
@@ -15,7 +15,6 @@ router.post("/login", async (req, res) => {
 
     // 1. Buscar usuario en la BD
     const user = await Usuario.findOne({ where: { username } });
-
     if (!user) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
@@ -60,7 +59,7 @@ router.post("/login", async (req, res) => {
 // =======================
 router.post("/register", async (req, res) => {
   try {
-    const { username, password, rol, estado, cliente_id } = req.body;
+    const { username, password, rol } = req.body;
 
     // 1. Verificar si el usuario ya existe
     const existente = await Usuario.findOne({ where: { username } });
@@ -71,16 +70,27 @@ router.post("/register", async (req, res) => {
     // 2. Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 3. Crear usuario
+    let cliente_id = null;
+
+    // 3. Si el rol es CLIENTE, primero crea un cliente
+    if (rol === "CLIENTE") {
+      const nuevoCliente = await Cliente.create({
+        nombre: username, // o los campos que necesite tu tabla Cliente
+        estado: "ACTIVO",
+      });
+      cliente_id = nuevoCliente.id_cliente;
+    }
+
+    // 4. Crear usuario
     const nuevoUsuario = await Usuario.create({
       username,
       password_hash: hashedPassword,
       rol,
-      estado: estado || "ACTIVO",
+      estado: "ACTIVO",
       cliente_id,
     });
 
-    // 4. Respuesta
+    // 5. Respuesta
     res.json({
       mensaje: "Usuario registrado",
       usuario: {
