@@ -133,23 +133,29 @@ const loginUsuario = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const usuario = await Usuario.findOne({ where: { username } });
-    if (!usuario) {
+    // Buscar usuario en la BD
+    const usuarioSequelize = await Usuario.findOne({ where: { username } });
+    if (!usuarioSequelize) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
     }
 
+    // Convertir a objeto plano para acceder a todas las propiedades
+    const usuario = usuarioSequelize.get({ plain: true });
+
+    // Verificar contraseña
     const isMatch = await bcrypt.compare(password, usuario.password_hash);
     if (!isMatch) {
       return res.status(401).json({ mensaje: 'Clave incorrecta', resultado: null });
     }
 
-    // Generar token con JWT
+    // Generar token JWT
     const token = jwt.sign(
       { id: usuario.id_usuario, rol: usuario.rol }, // payload
-      process.env.JWT_SECRET,                       // clave secreta de .env
+      process.env.JWT_SECRET,                       // clave secreta
       { expiresIn: '1h' }                           // duración del token
     );
 
+    // Respuesta con token y datos del usuario
     res.status(200).json({
       mensaje: 'Login exitoso',
       resultado: {
@@ -158,7 +164,7 @@ const loginUsuario = async (req, res) => {
           id_usuario: usuario.id_usuario,
           username: usuario.username,
           rol: usuario.rol,
-          cliente_id: usuario.cliente_id
+          cliente_id: usuario.cliente_id // <-- ahora siempre se envía
         }
       }
     });
@@ -166,6 +172,7 @@ const loginUsuario = async (req, res) => {
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
+
 
 // ============================
 // PUT - Asignar rol (solo ADMIN_DB)
