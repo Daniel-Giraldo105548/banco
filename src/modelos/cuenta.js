@@ -27,7 +27,7 @@ const defineCuenta = (sequelize, DataTypes) => {
         },
         id_cliente: {
             type: DataTypes.INTEGER,
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'cliente', 
                 key: 'cliente_id'

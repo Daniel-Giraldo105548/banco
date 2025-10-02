@@ -51,6 +51,8 @@ const registrarCuenta = async (req, res) => {
 
     const { numero_cuenta, estado, saldo, fecha_apertura, tipo_cuenta, id_cliente } = req.body;
 
+    console.log("Creando cuenta con id_cliente:", id_cliente);
+
     // Validar cliente
     const cliente = await Cliente.findByPk(id_cliente);
     if (!cliente) {

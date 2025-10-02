@@ -119,6 +119,8 @@
       id_cliente: idCliente
     };
 
+    console.log("Datos enviados al backend:", nuevaCuenta);
+
     try {
       const res = await fetch("/api/cuenta/registrar", {
         method: "POST",
