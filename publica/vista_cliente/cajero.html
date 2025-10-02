@@ -47,6 +47,7 @@
     <input type="number" class="form-control" id="monto" placeholder="Ingresa el monto">
   </div>
 
+  <!-- Inputs para transferencia -->
   <div class="mb-3">
     <label for="tipoCuenta" class="form-label">Tipo de Cuenta</label>
     <select id="tipoCuenta" class="form-control">
@@ -61,11 +62,6 @@
     <input type="text" class="form-control" id="numCuenta" placeholder="Ej: 1234567890">
   </div>
 
-  <div class="mb-3">
-    <label for="cuentaId" class="form-label">ID de Cuenta</label>
-    <input type="number" class="form-control" id="cuentaId" placeholder="Tu ID de cuenta">
-  </div>
-
   <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
   <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
   <button class="btn btn-info btn-cajero" id="transferir">Transferir</button>
@@ -73,83 +69,84 @@
 </div>
 
 <script>
+  let saldo = 0;
+
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
   const tipoCuentaInput = document.getElementById("tipoCuenta");
   const numCuentaInput = document.getElementById("numCuenta");
-  const cuentaIdInput = document.getElementById("cuentaId");
 
-  async function actualizarSaldo() {
-    const cuentaId = cuentaIdInput.value;
-    if (!cuentaId) return;
-    const res = await fetch(`/saldo/${cuentaId}`);
-    const data = await res.json();
-    saldoDiv.textContent = "Saldo: $" + data.saldo.toFixed(2);
+  function actualizarSaldo() {
+    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
   }
 
-  async function depositar() {
+  document.getElementById("depositar").addEventListener("click", () => {
     const monto = parseFloat(montoInput.value);
-    const cuenta_id = parseInt(cuentaIdInput.value);
-    if (isNaN(monto) || monto <= 0) return alert("Monto inválido");
-
-    const res = await fetch('/depositar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cuenta_id, monto })
-    });
-    const data = await res.json();
-    alert("Depósito exitoso: $" + monto.toFixed(2));
-    montoInput.value = "";
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    saldo += monto;
     actualizarSaldo();
-  }
-
-  async function retirar() {
-    const monto = parseFloat(montoInput.value);
-    const cuenta_id = parseInt(cuentaIdInput.value);
-    if (isNaN(monto) || monto <= 0) return alert("Monto inválido");
-
-    const res = await fetch('/retirar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cuenta_id, monto })
-    });
-    const data = await res.json();
-    if (data.error) return alert(data.error);
-    alert("Retiro exitoso: $" + monto.toFixed(2));
     montoInput.value = "";
-    actualizarSaldo();
-  }
+  });
 
-  async function transferir() {
+  document.getElementById("retirar").addEventListener("click", () => {
     const monto = parseFloat(montoInput.value);
-    const cuenta_id = parseInt(cuentaIdInput.value);
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    if (monto > saldo) {
+      alert("Saldo insuficiente");
+      return;
+    }
+    saldo -= monto;
+    actualizarSaldo();
+    montoInput.value = "";
+  });
+
+  document.getElementById("transferir").addEventListener("click", () => {
+    const monto = parseFloat(montoInput.value);
     const tipoCuenta = tipoCuentaInput.value;
-    const numCuenta = numCuentaInput.value;
+    const numCuenta = numCuentaInput.value.trim();
 
-    if (!tipoCuenta || !numCuenta || isNaN(monto) || monto <= 0) return alert("Datos inválidos");
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    if (monto > saldo) {
+      alert("Saldo insuficiente para transferir");
+      return;
+    }
+    if (tipoCuenta === "") {
+      alert("Selecciona el tipo de cuenta");
+      return;
+    }
+    if (numCuenta === "") {
+      alert("Ingresa un número de cuenta válido");
+      return;
+    }
 
-    const res = await fetch('/transferir', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cuenta_id, monto, tipoCuenta, numCuenta })
-    });
-    const data = await res.json();
-    if (data.error) return alert(data.error);
-    alert("Transferencia exitosa: $" + monto.toFixed(2));
+    saldo -= monto;
+    actualizarSaldo();
+
+    alert("Transferencia exitosa\n" +
+          "Monto: $" + monto.toFixed(2) + "\n" +
+          "Tipo de cuenta: " + tipoCuenta + "\n" +
+          "Número de cuenta: " + numCuenta);
+
+    // limpiar campos
     montoInput.value = "";
     tipoCuentaInput.value = "";
     numCuentaInput.value = "";
-    actualizarSaldo();
-  }
+  });
 
-  async function consultar() {
-    actualizarSaldo();
-  }
+  document.getElementById("consultar").addEventListener("click", () => {
+    alert("Tu saldo actual es: $" + saldo.toFixed(2));
+  });
 
-  document.getElementById("depositar").addEventListener("click", depositar);
-  document.getElementById("retirar").addEventListener("click", retirar);
-  document.getElementById("transferir").addEventListener("click", transferir);
-  document.getElementById("consultar").addEventListener("click", consultar);
+  actualizarSaldo();
 </script>
 
 </body>
