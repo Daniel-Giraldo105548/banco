@@ -70,10 +70,10 @@
         const data = await res.json();
 
         if (res.ok) {
-          // Guardamos en localStorage
+          // Guardamos datos en localStorage
           localStorage.setItem("token", data.token);
           localStorage.setItem("rol", data.usuario.rol);
-          localStorage.setItem("id_cliente", data.usuario.id_cliente); // Guardamos id_cliente
+          localStorage.setItem("id_cliente", data.usuario.id_cliente); // importante
 
           alert(`Bienvenido ${data.usuario.username}`);
 
