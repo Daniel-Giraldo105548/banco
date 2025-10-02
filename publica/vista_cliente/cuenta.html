@@ -60,10 +60,10 @@
       </select>
     </div>
 
-    <!-- ID Cliente -->
+    <!-- ID Cliente (autocompletado y solo lectura) -->
     <div class="mb-3">
       <label for="idCliente" class="form-label">ID Cliente</label>
-      <input type="number" class="form-control" id="idCliente" required>
+      <input type="number" class="form-control" id="idCliente" readonly>
     </div>
 
     <!-- Botón -->
@@ -79,9 +79,15 @@
     return "CU-" + Math.floor(1000000000 + Math.random() * 9000000000); 
   }
 
-  // Al cargar la página, generar un número de cuenta único
+  // Al cargar la página, generar un número de cuenta único y autocompletar id_cliente
   window.onload = () => {
     document.getElementById("numeroCuenta").value = generarNumeroCuenta();
+
+    // Obtener id_cliente del usuario logueado desde localStorage
+    const idCliente = localStorage.getItem("id_cliente");
+    if (idCliente) {
+      document.getElementById("idCliente").value = idCliente;
+    }
   };
 
   document.getElementById("formCuenta").addEventListener("submit", async function(e) {
@@ -120,8 +126,12 @@
       if (res.ok) {
         alert("Cuenta creada exitosamente:\nNúmero: " + data.resultado.numero_cuenta);
         document.getElementById("formCuenta").reset();
+
         // Generar nuevo número de cuenta para siguiente registro
         document.getElementById("numeroCuenta").value = generarNumeroCuenta();
+
+        // Volver a poner el id_cliente del usuario logueado
+        document.getElementById("idCliente").value = idCliente;
       } else {
         alert("Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
         console.error(data.resultado);
