@@ -157,7 +157,8 @@ const loginUsuario = async (req, res) => {
         usuario: {
           id_usuario: usuario.id_usuario,
           username: usuario.username,
-          rol: usuario.rol
+          rol: usuario.rol,
+          cliente_id: usuario.cliente_id
         }
       }
     });

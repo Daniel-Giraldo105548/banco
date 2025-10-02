@@ -99,7 +99,7 @@
     const tipoCuenta = document.getElementById("tipoCuenta").value;
     const idCliente = parseInt(document.getElementById("idCliente").value);
 
-    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta) {
+    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta || isNaN(idCliente)) {
       alert("Por favor completa todos los campos correctamente.");
       return;
     }
