@@ -35,21 +35,14 @@
   <h3><i class="bi bi-person-plus"></i> Crear Cuenta</h3>
   
   <form id="formCuenta">
-    <!-- Número de Cuenta -->
+    <!-- Número de Cuenta (solo lectura, generado automáticamente) -->
     <div class="mb-3">
       <label for="numeroCuenta" class="form-label">Número de Cuenta</label>
-      <input type="text" class="form-control" id="numeroCuenta" required>
+      <input type="text" class="form-control" id="numeroCuenta" readonly>
     </div>
 
-    <!-- Estado -->
-    <div class="mb-3">
-      <label for="estado" class="form-label">Estado</label>
-      <select id="estado" class="form-select" required>
-        <option value="">Selecciona...</option>
-        <option value="true">Activa</option>
-        <option value="false">Inactiva</option>
-      </select>
-    </div>
+    <!-- Estado (oculto, por defecto activo) -->
+    <input type="hidden" id="estado" value="true">
 
     <!-- Saldo Inicial -->
     <div class="mb-3">
@@ -81,11 +74,21 @@
 </div>
 
 <script>
+  // Generar número de cuenta aleatorio (ej: 10 dígitos)
+  function generarNumeroCuenta() {
+    return "CU-" + Math.floor(1000000000 + Math.random() * 9000000000); 
+  }
+
+  // Al cargar la página, generar un número de cuenta único
+  window.onload = () => {
+    document.getElementById("numeroCuenta").value = generarNumeroCuenta();
+  };
+
   document.getElementById("formCuenta").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     const numeroCuenta = document.getElementById("numeroCuenta").value.trim();
-    const estado = document.getElementById("estado").value === "true"; // lo convierte a boolean
+    const estado = true; // siempre activo
     const saldo = parseFloat(document.getElementById("saldo").value);
     const tipoCuenta = document.getElementById("tipoCuenta").value;
     const idCliente = parseInt(document.getElementById("idCliente").value);
@@ -115,10 +118,12 @@
       const data = await res.json();
 
       if (res.ok) {
-        alert("Cuenta creada exitosamente con ID: " + data.resultado.id_cuenta);
+        alert("✅ Cuenta creada exitosamente:\nNúmero: " + data.resultado.numero_cuenta);
         document.getElementById("formCuenta").reset();
+        // Generar nuevo número de cuenta para siguiente registro
+        document.getElementById("numeroCuenta").value = generarNumeroCuenta();
       } else {
-        alert("Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
+        alert("❌ Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
         console.error(data.resultado);
       }
     } catch (error) {
