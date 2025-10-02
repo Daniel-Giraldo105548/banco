@@ -188,10 +188,31 @@ const borrarCuenta = async (req, res) => {
   }
 };
 
+// Obtener cuenta por cliente_id
+const obtenerCuentaPorCliente = async (req, res) => {
+  try {
+    const cliente_id = req.params.cliente_id;
+
+    const cuenta = await Cuenta.findOne({ where: { id_cliente: cliente_id } });
+
+    if (!cuenta) {
+      return res.status(404).json({ mensaje: "Cuenta no encontrada", resultado: null });
+    }
+
+    res.status(200).json({
+      mensaje: "Cuenta encontrada",
+      resultado: cuenta
+    });
+  } catch (err) {
+    res.status(500).json({ mensaje: err.message, resultado: null });
+  }
+};
+
 module.exports = {
   registrarCuenta,
   listarCuentas,
   obtenerCuenta,
   actualizarCuenta,
   borrarCuenta,
+  obtenerCuentaPorCliente
 };
