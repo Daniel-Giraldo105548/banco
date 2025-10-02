@@ -25,7 +25,7 @@ const defineCuenta = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
-        id_cliente: {
+        cliente_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
