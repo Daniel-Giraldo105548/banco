@@ -31,7 +31,7 @@
       width: 100%;
       margin-bottom: 0.5rem;
     }
-    input, select {
+    input[type="number"] {
       border-radius: 0.5rem;
     }
   </style>
@@ -47,107 +47,54 @@
     <input type="number" class="form-control" id="monto" placeholder="Ingresa el monto">
   </div>
 
-  <div class="mb-3">
-    <label for="tipoCuenta" class="form-label">Tipo de Cuenta</label>
-    <select id="tipoCuenta" class="form-control" disabled>
-      <option value="">Seleccione</option>
-      <option value="Ahorros">Ahorros</option>
-      <option value="Corriente">Corriente</option>
-    </select>
-  </div>
-
-  <div class="mb-3">
-    <label for="numCuenta" class="form-label">Número de Cuenta</label>
-    <input type="text" class="form-control" id="numCuenta" readonly placeholder="Ej: 1234567890">
-  </div>
-
   <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
   <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
-  <button class="btn btn-info btn-cajero" id="transferir">Transferir</button>
   <button class="btn btn-primary btn-cajero" id="consultar">Consultar Saldo</button>
 </div>
 
 <script>
-const saldoDiv = document.getElementById("saldo");
-const montoInput = document.getElementById("monto");
-const tipoCuentaInput = document.getElementById("tipoCuenta");
-const numCuentaInput = document.getElementById("numCuenta");
+  // Simulamos un saldo inicial
+  let saldo = 0;
 
-let saldo = 0;
+  const saldoDiv = document.getElementById("saldo");
+  const montoInput = document.getElementById("monto");
 
-// Obtener cliente_id desde localStorage
-const cliente_id = localStorage.getItem("id_cliente");
-
-async function cargarCuenta() {
-  if (!cliente_id) {
-    alert("No se encontró el cliente. Por favor inicia sesión.");
-    return;
+  function actualizarSaldo() {
+    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
   }
 
-  try {
-    const res = await fetch(`/api/cuenta/cliente/${cliente_id}`);
-    const data = await res.json();
-
-    if (res.ok && data.resultado) {
-      saldo = parseFloat(data.resultado.saldo);
-      actualizarSaldo();
-
-      tipoCuentaInput.value = data.resultado.tipo_cuenta;
-      numCuentaInput.value = data.resultado.numero_cuenta;
-
-      // Bloquear campos que no deben modificarse
-      tipoCuentaInput.disabled = true;
-      numCuentaInput.readOnly = true;
-    } else {
-      alert("No se pudo cargar la cuenta: " + (data.mensaje || ""));
+  document.getElementById("depositar").addEventListener("click", () => {
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
     }
-  } catch (err) {
-    alert("Error al cargar la cuenta: " + err.message);
-  }
-}
+    saldo += monto;
+    actualizarSaldo();
+    montoInput.value = "";
+  });
 
-function actualizarSaldo() {
-  saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
-}
+  document.getElementById("retirar").addEventListener("click", () => {
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) {
+      alert("Ingresa un monto válido");
+      return;
+    }
+    if (monto > saldo) {
+      alert("Saldo insuficiente");
+      return;
+    }
+    saldo -= monto;
+    actualizarSaldo();
+    montoInput.value = "";
+  });
 
-// Funciones de botones
-document.getElementById("depositar").addEventListener("click", () => {
-  const monto = parseFloat(montoInput.value);
-  if (isNaN(monto) || monto <= 0) { alert("Ingresa un monto válido"); return; }
-  saldo += monto;
+  document.getElementById("consultar").addEventListener("click", () => {
+    alert("Tu saldo actual es: $" + saldo.toFixed(2));
+  });
+
+  // Inicializamos
   actualizarSaldo();
-  montoInput.value = "";
-});
-
-document.getElementById("retirar").addEventListener("click", () => {
-  const monto = parseFloat(montoInput.value);
-  if (isNaN(monto) || monto <= 0) { alert("Ingresa un monto válido"); return; }
-  if (monto > saldo) { alert("Saldo insuficiente"); return; }
-  saldo -= monto;
-  actualizarSaldo();
-  montoInput.value = "";
-});
-
-document.getElementById("transferir").addEventListener("click", () => {
-  const monto = parseFloat(montoInput.value);
-  const tipoCuenta = tipoCuentaInput.value;
-  const numCuenta = numCuentaInput.value.trim();
-  if (isNaN(monto) || monto <= 0) { alert("Ingresa un monto válido"); return; }
-  if (monto > saldo) { alert("Saldo insuficiente"); return; }
-  if (!tipoCuenta || !numCuenta) { alert("Completa todos los campos"); return; }
-
-  saldo -= monto;
-  actualizarSaldo();
-  alert(`Transferencia exitosa\nMonto: $${monto.toFixed(2)}\nTipo de cuenta: ${tipoCuenta}\nNúmero de cuenta: ${numCuenta}`);
-  montoInput.value = "";
-});
-
-document.getElementById("consultar").addEventListener("click", () => {
-  alert("Tu saldo actual es: $" + saldo.toFixed(2));
-});
-
-// Cargar la cuenta al iniciar la página
-cargarCuenta();
 </script>
 
 </body>
