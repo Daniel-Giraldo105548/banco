@@ -35,14 +35,11 @@
   <h3><i class="bi bi-person-plus"></i> Crear Cuenta</h3>
   
   <form id="formCuenta">
-    <!-- Número de Cuenta (solo lectura, generado automáticamente) -->
+    <!-- Número de Cuenta -->
     <div class="mb-3">
       <label for="numeroCuenta" class="form-label">Número de Cuenta</label>
       <input type="text" class="form-control" id="numeroCuenta" readonly>
     </div>
-
-    <!-- Estado (oculto, por defecto activo) -->
-    <input type="hidden" id="estado" value="true">
 
     <!-- Saldo Inicial -->
     <div class="mb-3">
@@ -60,7 +57,17 @@
       </select>
     </div>
 
-    <!-- ID Cliente (autocompletado y solo lectura) -->
+    <!-- Estado -->
+    <div class="mb-3">
+      <label for="estado" class="form-label">Estado</label>
+      <select class="form-select" id="estado" required>
+        <option value="">Selecciona...</option>
+        <option value="true">Activo</option>
+        <option value="false">Inactivo</option>
+      </select>
+    </div>
+
+    <!-- ID Cliente -->
     <div class="mb-3">
       <label for="idCliente" class="form-label">ID Cliente</label>
       <input type="number" class="form-control" id="idCliente" readonly>
@@ -74,45 +81,43 @@
 </div>
 
 <script>
-  // Generar número de cuenta aleatorio (ej: 10 dígitos)
+  // Generar número de cuenta aleatorio (10 dígitos)
   function generarNumeroCuenta() {
-    return "CU-" + Math.floor(1000000000 + Math.random() * 9000000000); 
+    return "CU-" + Math.floor(1000000000 + Math.random() * 9000000000);
   }
 
-  // Al cargar la página, generar número de cuenta y autocompletar id_cliente
+  // Al cargar la página
   window.addEventListener("DOMContentLoaded", () => {
-    // Número de cuenta
     document.getElementById("numeroCuenta").value = generarNumeroCuenta();
 
     // Autocompletar id_cliente desde localStorage
     const idCliente = localStorage.getItem("id_cliente");
     if (idCliente) {
-      const inputCliente = document.getElementById("idCliente");
-      inputCliente.value = idCliente;
-      inputCliente.readOnly = true; // evita que el usuario lo cambie
+      document.getElementById("idCliente").value = idCliente;
     } else {
       alert("No se pudo obtener el ID del cliente. Por favor inicia sesión nuevamente.");
       console.error("id_cliente no encontrado en localStorage");
     }
   });
 
-  // Listener del submit del formulario
+  // Submit del formulario
   document.getElementById("formCuenta").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     const numeroCuenta = document.getElementById("numeroCuenta").value.trim();
     const saldo = parseFloat(document.getElementById("saldo").value);
     const tipoCuenta = document.getElementById("tipoCuenta").value;
+    const estadoSeleccionado = document.getElementById("estado").value === "true"; // boolean
     const idCliente = parseInt(document.getElementById("idCliente").value, 10);
 
-    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta || isNaN(idCliente)) {
+    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta || isNaN(idCliente) || isNaN(estadoSeleccionado)) {
       alert("Por favor completa todos los campos correctamente.");
       return;
     }
 
     const nuevaCuenta = {
       numero_cuenta: numeroCuenta,
-      estado: true,
+      estado: estadoSeleccionado,
       saldo,
       fecha_apertura: new Date().toISOString().split("T")[0],
       tipo_cuenta: tipoCuenta,
@@ -134,7 +139,7 @@
         alert("Cuenta creada exitosamente:\nNúmero: " + data.resultado.numero_cuenta);
         document.getElementById("formCuenta").reset();
         document.getElementById("numeroCuenta").value = generarNumeroCuenta();
-        document.getElementById("idCliente").value = idCliente; // mantener el id_cliente
+        document.getElementById("idCliente").value = idCliente;
       } else {
         alert("Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
         console.error(data.resultado);
