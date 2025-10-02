@@ -10,5 +10,4 @@ enrutador.get('/obtener/:id_cuenta', controlador_cuenta.obtenerCuenta);
 enrutador.put('/actualizar/:id_cuenta', controlador_cuenta.actualizarCuenta);
 enrutador.delete('/borrar/:id_cuenta', controlador_cuenta.borrarCuenta);
 router.get("/cliente/:cliente_id", controlador_cuenta.obtenerCuentaPorCliente);
-
 module.exports = enrutador;
