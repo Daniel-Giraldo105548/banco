@@ -35,16 +35,26 @@
   <h3><i class="bi bi-person-plus"></i> Crear Cuenta</h3>
   
   <form id="formCuenta">
-    <!-- ID Cliente -->
+    <!-- Número de Cuenta -->
     <div class="mb-3">
-      <label for="idCliente" class="form-label">ID Cliente</label>
-      <input type="text" class="form-control" id="idCliente" required>
+      <label for="numeroCuenta" class="form-label">Número de Cuenta</label>
+      <input type="text" class="form-control" id="numeroCuenta" required>
+    </div>
+
+    <!-- Estado -->
+    <div class="mb-3">
+      <label for="estado" class="form-label">Estado</label>
+      <select id="estado" class="form-select" required>
+        <option value="">Selecciona...</option>
+        <option value="true">Activa</option>
+        <option value="false">Inactiva</option>
+      </select>
     </div>
 
     <!-- Saldo Inicial -->
     <div class="mb-3">
       <label for="saldo" class="form-label">Saldo Inicial</label>
-      <input type="number" class="form-control" id="saldo" min="0" required>
+      <input type="number" class="form-control" id="saldo" min="0" step="0.01" required>
     </div>
 
     <!-- Tipo de Cuenta -->
@@ -57,6 +67,12 @@
       </select>
     </div>
 
+    <!-- ID Cliente -->
+    <div class="mb-3">
+      <label for="idCliente" class="form-label">ID Cliente</label>
+      <input type="number" class="form-control" id="idCliente" required>
+    </div>
+
     <!-- Botón -->
     <button type="submit" class="btn btn-primary w-100">
       <i class="bi bi-check-circle"></i> Registrar Cuenta
@@ -65,26 +81,50 @@
 </div>
 
 <script>
-  document.getElementById("formCuenta").addEventListener("submit", function(e) {
+  document.getElementById("formCuenta").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const idCliente = document.getElementById("idCliente").value.trim();
+    const numeroCuenta = document.getElementById("numeroCuenta").value.trim();
+    const estado = document.getElementById("estado").value === "true"; // lo convierte a boolean
     const saldo = parseFloat(document.getElementById("saldo").value);
     const tipoCuenta = document.getElementById("tipoCuenta").value;
+    const idCliente = parseInt(document.getElementById("idCliente").value);
 
-    if (!idCliente || isNaN(saldo) || saldo < 0 || !tipoCuenta) {
+    if (!numeroCuenta || isNaN(saldo) || saldo < 0 || !tipoCuenta || isNaN(idCliente)) {
       alert("Por favor completa todos los campos correctamente.");
       return;
     }
 
-    // Simulación (más adelante lo puedes conectar con tu backend)
-    alert("Cuenta creada exitosamente:\n\n" +
-          "ID Cliente: " + idCliente + "\n" +
-          "Saldo Inicial: $" + saldo.toFixed(2) + "\n" +
-          "Tipo de Cuenta: " + tipoCuenta);
+    // Datos a enviar al backend
+    const nuevaCuenta = {
+      numero_cuenta: numeroCuenta,
+      estado: estado,
+      saldo: saldo,
+      fecha_apertura: new Date().toISOString().split("T")[0], // Fecha de hoy (YYYY-MM-DD)
+      tipo_cuenta: tipoCuenta,
+      id_cliente: idCliente
+    };
 
-    // Limpiar formulario
-    document.getElementById("formCuenta").reset();
+    try {
+      const res = await fetch("/api/cuenta/registrar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nuevaCuenta)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Cuenta creada exitosamente con ID: " + data.resultado.id_cuenta);
+        document.getElementById("formCuenta").reset();
+      } else {
+        alert("Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
+        console.error(data.resultado);
+      }
+    } catch (error) {
+      alert("Error al conectar con el servidor.");
+      console.error(error);
+    }
   });
 </script>
 
