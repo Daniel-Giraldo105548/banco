@@ -11,7 +11,7 @@ enrutador.put('/actualizar/:id_cuenta', controlador_cuenta.actualizarCuenta);
 enrutador.delete('/borrar/:id_cuenta', controlador_cuenta.borrarCuenta);
 
 // Rutas del cajero
-enrutador.get('/saldo/:id_cliente', controlador_cuenta.obtenerSaldo);
+enrutador.get('/saldo/:id_cliente', controlador_cuenta.consultarSaldo);
 enrutador.post('/depositar', controlador_cuenta.depositar);
 enrutador.post('/retirar', controlador_cuenta.retirar);
 
