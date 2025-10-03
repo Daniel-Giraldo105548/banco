@@ -32,9 +32,10 @@ const defineUsuario = (sequelize, DataTypes) => {
         id_cliente: {
             type: DataTypes.INTEGER,
             allowNull: true,
+            field: 'id_cliente',   // asegura que mapea a la columna real
             references: {
-                model: 'cliente', // nombre de la tabla
-                key: 'cliente_id'
+                model: 'cliente',  // tabla referenciada
+                key: 'cliente_id'  // PK de cliente
             }
         }
     }, {
