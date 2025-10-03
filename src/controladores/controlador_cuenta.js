@@ -187,32 +187,40 @@
   };
 
 
-  const consultarSaldo = async (req, res) => {
-    try {
-      const { id_cliente } = req.params;
-      console.log("ID Cliente recibido:", id_cliente); // para debug
+ const consultarSaldo = async (req, res) => {
+  try {
+    const { id_cliente } = req.params;
+    console.log("ID Cliente recibido:", id_cliente); // para debug
 
-      const cuenta = await Cuenta.findOne({
-        where: { id_cliente },
-        attributes: ["id_cuenta", "numero_cuenta", "saldo", "estado", "tipo_cuenta"]
+    const cuenta = await Cuenta.findOne({
+      where: { id_cliente },
+      attributes: ["id_cuenta", "numero_cuenta", "saldo", "estado", "tipo_cuenta"]
+    });
+
+    if (!cuenta) {
+      return res.status(404).json({
+        mensaje: "No se encontró ninguna cuenta para este cliente",
+        resultado: null
       });
-
-      if (!cuenta) {
-        return res.status(404).json({
-          mensaje: "No se encontró ninguna cuenta para este cliente",
-          resultado: null
-        });
-      }
-
-      res.status(200).json({
-        mensaje: "Cuenta encontrada",
-        resultado: cuenta
-      });
-    } catch (error) {
-      console.error("Error al consultar saldo:", error);
-      res.status(500).json({ mensaje: "Error al consultar saldo", resultado: null });
     }
-  };
+
+    // ✅ Solo enviar un JSON plano
+    res.status(200).json({
+      mensaje: "Cuenta encontrada",
+      resultado: {
+        id_cuenta: cuenta.id_cuenta,
+        numero_cuenta: cuenta.numero_cuenta,
+        saldo: cuenta.saldo,
+        estado: cuenta.estado,
+        tipo_cuenta: cuenta.tipo_cuenta
+      }
+    });
+  } catch (error) {
+    console.error("Error al consultar saldo:", error);
+    res.status(500).json({ mensaje: "Error al consultar saldo", resultado: null });
+  }
+};
+
 
 
   // ============================
