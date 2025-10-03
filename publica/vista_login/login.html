@@ -68,12 +68,20 @@
         });
 
         const data = await res.json();
+        console.log("Datos recibidos en login:", data); // Depuración
 
         if (res.ok) {
           // Guardamos datos en localStorage
           localStorage.setItem("token", data.token);
           localStorage.setItem("rol", data.usuario.rol);
-          localStorage.setItem("id_cliente", data.usuario.cliente_id);
+
+          if (data.usuario.cliente_id) {
+            localStorage.setItem("id_cliente", data.usuario.cliente_id);
+            console.log("ID Cliente guardado:", data.usuario.cliente_id);
+          } else {
+            localStorage.removeItem("id_cliente");
+            console.warn("Este usuario no tiene cliente_id asociado");
+          }
 
           alert(`Bienvenido ${data.usuario.username}`);
 
