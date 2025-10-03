@@ -186,10 +186,117 @@ const borrarCuenta = async (req, res) => {
   }
 };
 
+
+// ============================
+// GET - Consultar saldo por cliente
+// ============================
+const obtenerSaldo = async (req, res) => {
+  try {
+    const { id_cliente } = req.params;
+
+    const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+
+    if (!cuenta) {
+      return res.status(404).json({
+        mensaje: "Cuenta no encontrada para este cliente",
+        resultado: null,
+      });
+    }
+
+    res.status(200).json({
+      mensaje: "Saldo consultado",
+      resultado: { saldo: cuenta.saldo }
+    });
+  } catch (err) {
+    res.status(500).json({ mensaje: err.message, resultado: null });
+  }
+};
+
+// ============================
+// POST - Depositar dinero
+// ============================
+const depositar = async (req, res) => {
+  try {
+    const { id_cliente, monto } = req.body;
+
+    if (!id_cliente || !monto || monto <= 0) {
+      return res.status(400).json({
+        mensaje: "El id_cliente y un monto válido son obligatorios",
+        resultado: null,
+      });
+    }
+
+    const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+
+    if (!cuenta) {
+      return res.status(404).json({
+        mensaje: "Cuenta no encontrada para este cliente",
+        resultado: null,
+      });
+    }
+
+    cuenta.saldo += monto;
+    await cuenta.save();
+
+    res.status(200).json({
+      mensaje: "Depósito realizado",
+      resultado: { saldo: cuenta.saldo }
+    });
+  } catch (err) {
+    res.status(500).json({ mensaje: err.message, resultado: null });
+  }
+};
+
+// ============================
+// POST - Retirar dinero
+// ============================
+const retirar = async (req, res) => {
+  try {
+    const { id_cliente, monto } = req.body;
+
+    if (!id_cliente || !monto || monto <= 0) {
+      return res.status(400).json({
+        mensaje: "El id_cliente y un monto válido son obligatorios",
+        resultado: null,
+      });
+    }
+
+    const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+
+    if (!cuenta) {
+      return res.status(404).json({
+        mensaje: "Cuenta no encontrada para este cliente",
+        resultado: null,
+      });
+    }
+
+    if (cuenta.saldo < monto) {
+      return res.status(400).json({
+        mensaje: "Saldo insuficiente",
+        resultado: { saldo: cuenta.saldo }
+      });
+    }
+
+    cuenta.saldo -= monto;
+    await cuenta.save();
+
+    res.status(200).json({
+      mensaje: "Retiro realizado",
+      resultado: { saldo: cuenta.saldo }
+    });
+  } catch (err) {
+    res.status(500).json({ mensaje: err.message, resultado: null });
+  }
+};
+
+
 module.exports = {
   registrarCuenta,
   listarCuentas,
   obtenerCuenta,
   actualizarCuenta,
   borrarCuenta,
+  obtenerSaldo,
+  depositar,
+  retirar
 };
