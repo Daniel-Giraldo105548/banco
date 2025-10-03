@@ -76,8 +76,8 @@
           localStorage.setItem("rol", data.usuario.rol);
 
           if (data.usuario.cliente_id) {
-            localStorage.setItem("id_cliente", data.usuario.cliente_id);
-            console.log("ID Cliente guardado:", data.usuario.cliente_id);
+            localStorage.setItem("id_cliente", data.usuario.id_cliente);
+            console.log("ID Cliente guardado:", data.usuario.id_cliente);
           } else {
             localStorage.removeItem("id_cliente");
             console.warn("Este usuario no tiene cliente_id asociado");

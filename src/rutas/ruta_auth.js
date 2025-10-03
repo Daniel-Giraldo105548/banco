@@ -45,7 +45,7 @@ router.post("/login", async (req, res) => {
         username: user.username,
         rol: user.rol,
         estado: user.estado,
-        cliente_id: user.cliente_id,
+        id_cliente: user.id_cliente, // ✅ ahora usa el campo correcto
       },
     });
   } catch (error) {
@@ -70,15 +70,15 @@ router.post("/register", async (req, res) => {
     // 2. Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let cliente_id = null;
+    let id_cliente = null;
 
     // 3. Si el rol es CLIENTE, primero crea un cliente
     if (rol === "CLIENTE") {
       const nuevoCliente = await Cliente.create({
-        nombre: username, // o los campos que necesite tu tabla Cliente
+        nombre: username, // 👈 aquí pon los campos que realmente necesita tu tabla Cliente
         estado: "ACTIVO",
       });
-      cliente_id = nuevoCliente.id_cliente;
+      id_cliente = nuevoCliente.id_cliente; // ✅ columna correcta
     }
 
     // 4. Crear usuario
@@ -87,7 +87,7 @@ router.post("/register", async (req, res) => {
       password_hash: hashedPassword,
       rol,
       estado: "ACTIVO",
-      cliente_id,
+      id_cliente, // ✅ corregido
     });
 
     // 5. Respuesta
@@ -98,7 +98,7 @@ router.post("/register", async (req, res) => {
         username: nuevoUsuario.username,
         rol: nuevoUsuario.rol,
         estado: nuevoUsuario.estado,
-        cliente_id: nuevoUsuario.cliente_id,
+        id_cliente: nuevoUsuario.id_cliente, // ✅ corregido
       },
     });
   } catch (error) {

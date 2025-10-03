@@ -41,9 +41,12 @@ const Cuenta = defineCuenta(sequelize, DataTypes);
 const Transaccion = defineTransaccion(sequelize, DataTypes);
 const TipoTransaccion = defineTipoTransaccion(sequelize, DataTypes);
 
+
 // Cliente ↔ Usuario
-Usuario.belongsTo(Cliente, { foreignKey: 'cliente_id' });
-Cliente.hasMany(Usuario, { foreignKey: 'cliente_id' });
+Usuario.belongsTo(Cliente, { foreignKey: 'id_cliente' });
+Cliente.hasMany(Usuario, { foreignKey: 'id_cliente' });
+
+
 
 // Corresponsal ↔ Barrio
 Corresponsal.belongsTo(Barrio, { foreignKey: 'id_barrio' });
