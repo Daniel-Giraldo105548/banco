@@ -52,16 +52,51 @@
 <script>
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
-  const idCliente = localStorage.getItem("id_cliente"); // guardado tras login
 
-  if (!idCliente) {
-    alert("No se encontró el ID del cliente. Inicia sesión de nuevo.");
+  function actualizarSaldo(saldo) {
+    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
+    montoInput.value = "";
   }
 
-  // Consultar saldo desde backend
+  // ✅ Consultar saldo
   async function obtenerSaldo() {
+    const idCliente = localStorage.getItem("id_cliente");
+    console.log("ID Cliente desde localStorage:", idCliente);
+
+    if (!idCliente) {
+      alert("No se encontró ID de cliente. Inicia sesión otra vez.");
+      return;
+    }
+
     try {
       const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        actualizarSaldo(data.resultado.saldo);
+      } else {
+        alert(data.mensaje);
+      }
+    } catch (err) {
+      alert("Error al consultar saldo.");
+      console.error(err);
+    }
+  }
+
+  // ✅ Depositar
+  async function depositar() {
+    const idCliente = localStorage.getItem("id_cliente");
+    if (!idCliente) return alert("Inicia sesión de nuevo");
+
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+
+    try {
+      const res = await fetch("/api/cuenta/depositar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_cliente: idCliente, monto })
+      });
       const data = await res.json();
       if (res.ok) {
         actualizarSaldo(data.saldo);
@@ -69,59 +104,44 @@
         alert(data.mensaje);
       }
     } catch (err) {
+      alert("Error al depositar.");
       console.error(err);
-      alert("Error al consultar saldo.");
     }
   }
 
-  // Depositar
-  async function depositar() {
-    const monto = parseFloat(montoInput.value);
-    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
-
-    const res = await fetch("/api/cuenta/depositar", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_cliente: idCliente, monto })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      actualizarSaldo(data.saldo);
-    } else {
-      alert(data.mensaje);
-    }
-  }
-
-  // Retirar
+  // ✅ Retirar
   async function retirar() {
+    const idCliente = localStorage.getItem("id_cliente");
+    if (!idCliente) return alert("Inicia sesión de nuevo");
+
     const monto = parseFloat(montoInput.value);
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
-    const res = await fetch("/api/cuenta/retirar", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_cliente: idCliente, monto })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      actualizarSaldo(data.saldo);
-    } else {
-      alert(data.mensaje);
+    try {
+      const res = await fetch("/api/cuenta/retirar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_cliente: idCliente, monto })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        actualizarSaldo(data.saldo);
+      } else {
+        alert(data.mensaje);
+      }
+    } catch (err) {
+      alert("Error al retirar.");
+      console.error(err);
     }
   }
 
-  function actualizarSaldo(saldo) {
-    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
-    montoInput.value = "";
-  }
-
-  // Eventos
+  // Eventos de botones
+  document.getElementById("consultar").addEventListener("click", obtenerSaldo);
   document.getElementById("depositar").addEventListener("click", depositar);
   document.getElementById("retirar").addEventListener("click", retirar);
-  document.getElementById("consultar").addEventListener("click", obtenerSaldo);
 
-  // Inicializar
-  obtenerSaldo();
+  // ✅ Consultar saldo automáticamente al abrir
+  document.addEventListener("DOMContentLoaded", obtenerSaldo);
 </script>
 
 </body>

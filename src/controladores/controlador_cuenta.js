@@ -187,30 +187,33 @@ const borrarCuenta = async (req, res) => {
 };
 
 
-// ============================
-// GET - Consultar saldo por cliente
-// ============================
-const obtenerSaldo = async (req, res) => {
+const consultarSaldo = async (req, res) => {
   try {
     const { id_cliente } = req.params;
+    console.log("ID Cliente recibido:", id_cliente); // para debug
 
-    const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+    const cuenta = await Cuenta.findOne({
+      where: { id_cliente },
+      attributes: ["id_cuenta", "numero_cuenta", "saldo", "estado", "tipo_cuenta"]
+    });
 
     if (!cuenta) {
       return res.status(404).json({
-        mensaje: "Cuenta no encontrada para este cliente",
-        resultado: null,
+        mensaje: "No se encontró ninguna cuenta para este cliente",
+        resultado: null
       });
     }
 
     res.status(200).json({
-      mensaje: "Saldo consultado",
-      resultado: { saldo: cuenta.saldo }
+      mensaje: "Cuenta encontrada",
+      resultado: cuenta
     });
-  } catch (err) {
-    res.status(500).json({ mensaje: err.message, resultado: null });
+  } catch (error) {
+    console.error("Error al consultar saldo:", error);
+    res.status(500).json({ mensaje: "Error al consultar saldo", resultado: null });
   }
 };
+
 
 // ============================
 // POST - Depositar dinero
