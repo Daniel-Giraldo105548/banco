@@ -31,9 +31,6 @@
       width: 100%;
       margin-bottom: 0.5rem;
     }
-    input[type="number"] {
-      border-radius: 0.5rem;
-    }
   </style>
 </head>
 <body>
@@ -53,48 +50,78 @@
 </div>
 
 <script>
-  // Simulamos un saldo inicial
-  let saldo = 0;
-
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
+  const idCliente = localStorage.getItem("id_cliente"); // guardado tras login
 
-  function actualizarSaldo() {
-    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
+  if (!idCliente) {
+    alert("No se encontró el ID del cliente. Inicia sesión de nuevo.");
   }
 
-  document.getElementById("depositar").addEventListener("click", () => {
+  // Consultar saldo desde backend
+  async function obtenerSaldo() {
+    try {
+      const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
+      const data = await res.json();
+      if (res.ok) {
+        actualizarSaldo(data.saldo);
+      } else {
+        alert(data.mensaje);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al consultar saldo.");
+    }
+  }
+
+  // Depositar
+  async function depositar() {
     const monto = parseFloat(montoInput.value);
-    if (isNaN(monto) || monto <= 0) {
-      alert("Ingresa un monto válido");
-      return;
-    }
-    saldo += monto;
-    actualizarSaldo();
-    montoInput.value = "";
-  });
+    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
-  document.getElementById("retirar").addEventListener("click", () => {
+    const res = await fetch("/api/cuenta/depositar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_cliente: idCliente, monto })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      actualizarSaldo(data.saldo);
+    } else {
+      alert(data.mensaje);
+    }
+  }
+
+  // Retirar
+  async function retirar() {
     const monto = parseFloat(montoInput.value);
-    if (isNaN(monto) || monto <= 0) {
-      alert("Ingresa un monto válido");
-      return;
+    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+
+    const res = await fetch("/api/cuenta/retirar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_cliente: idCliente, monto })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      actualizarSaldo(data.saldo);
+    } else {
+      alert(data.mensaje);
     }
-    if (monto > saldo) {
-      alert("Saldo insuficiente");
-      return;
-    }
-    saldo -= monto;
-    actualizarSaldo();
+  }
+
+  function actualizarSaldo(saldo) {
+    saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
     montoInput.value = "";
-  });
+  }
 
-  document.getElementById("consultar").addEventListener("click", () => {
-    alert("Tu saldo actual es: $" + saldo.toFixed(2));
-  });
+  // Eventos
+  document.getElementById("depositar").addEventListener("click", depositar);
+  document.getElementById("retirar").addEventListener("click", retirar);
+  document.getElementById("consultar").addEventListener("click", obtenerSaldo);
 
-  // Inicializamos
-  actualizarSaldo();
+  // Inicializar
+  obtenerSaldo();
 </script>
 
 </body>
