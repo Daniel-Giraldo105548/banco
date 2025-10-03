@@ -29,7 +29,7 @@ const defineUsuario = (sequelize, DataTypes) => {
             type: DataTypes.STRING(20),
             defaultValue: 'ACTIVO'
         },
-        cliente_id: {
+        id_cliente: {
             type: DataTypes.INTEGER,
             allowNull: true,
             references: {
