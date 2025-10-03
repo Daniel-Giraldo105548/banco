@@ -204,6 +204,15 @@
       });
     }
 
+// Convertir Sequelize instance a objeto plano
+const cuentaPlano = cuenta.get({ plain: true });
+
+res.status(200).json({
+  mensaje: "Cuenta encontrada",
+  resultado: cuentaPlano
+});
+
+
     // ✅ Solo enviar un JSON plano
     res.status(200).json({
       mensaje: "Cuenta encontrada",
