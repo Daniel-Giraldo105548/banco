@@ -181,57 +181,49 @@ const depositarEnCuenta = async (req, res) => {
   }
 };
 
-// POST - Retirar dinero de una cuenta
+ // POST - Retirar dinero desde el cliente
 const retirarDeCuenta = async (req, res) => {
   try {
-    const { id_cuenta_origen, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+    console.log("cuerpo recibido:", req.body);
 
-    // Validaciones básicas
-    if (!id_cuenta_origen || !monto || monto <= 0) {
+    const { id_cliente, monto } = req.body;
+
+    if (!id_cliente || !monto || monto <= 0) {
       return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
     }
 
-    // Buscar la cuenta origen
-    const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
-    if (!cuentaOrigen) {
-      return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
+    // Buscar cuenta del cliente
+    const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+
+    if (!cuenta) {
+      return res.status(404).json({ mensaje: 'No se encontró una cuenta asociada al cliente', resultado: null });
     }
 
     // Verificar saldo suficiente
-    if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
+    if (parseFloat(cuenta.saldo) < parseFloat(monto)) {
       return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });
     }
 
-    // 💸 Actualizar saldo (restar monto)
-    cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
-    await cuentaOrigen.save();
+    // Restar monto
+    cuenta.saldo = parseFloat(cuenta.saldo) - parseFloat(monto);
+    await cuenta.save();
 
     // Registrar la transacción
     const nuevaTransaccion = await Transaccion.create({
       tipo: 'Retiro',
-      fecha,
+      fecha: new Date(),
       monto,
-      id_cuenta_origen,
-      id_cuenta_destino: id_cuenta_origen, // retiro propio
-      id_corresponsal,
-      id_tipo_transaccion
-    });
-
-    // Traer la transacción con relaciones
-    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
-      include: [
-        { model: Cuenta, as: 'cuentaOrigen' },
-        { model: Cuenta, as: 'cuentaDestino' },
-        { model: Corresponsal, as: 'corresponsal' },
-        { model: TipoTransaccion, as: 'tipoTransaccion' }
-      ]
+      id_cuenta_origen: cuenta.id_cuenta,
+      id_cuenta_destino: cuenta.id_cuenta, // retiro propio
+      id_corresponsal: 2, // fijo o puedes ajustarlo
+      id_tipo_transaccion: 3 // id del tipo “retiro” en tu base
     });
 
     res.status(201).json({
       mensaje: 'Retiro realizado correctamente',
       resultado: {
-        transaccion: transaccionConRelaciones,
-        nuevo_saldo: cuentaOrigen.saldo
+        transaccion: nuevaTransaccion,
+        nuevo_saldo: cuenta.saldo
       }
     });
 

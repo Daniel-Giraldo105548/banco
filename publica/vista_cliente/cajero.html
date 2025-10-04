@@ -126,57 +126,37 @@
     }
   }
 
-  // POST - Retirar dinero desde el cliente
-const retirarDeCuenta = async (req, res) => {
+ // ✅ Retirar
+async function retirar() {
+  const idCliente = localStorage.getItem("id_cliente");
+  if (!idCliente) return alert("Inicia sesión de nuevo");
+
+  const monto = parseFloat(montoInput.value);
+  if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+
+  const data = { id_cliente: idCliente, monto };
+
   try {
-    console.log("cuerpo recibido:", req.body);
-
-    const { id_cliente, monto } = req.body;
-
-    if (!id_cliente || !monto || monto <= 0) {
-      return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
-    }
-
-    // Buscar cuenta del cliente
-    const cuenta = await Cuenta.findOne({ where: { id_cliente } });
-
-    if (!cuenta) {
-      return res.status(404).json({ mensaje: 'No se encontró una cuenta asociada al cliente', resultado: null });
-    }
-
-    // Verificar saldo suficiente
-    if (parseFloat(cuenta.saldo) < parseFloat(monto)) {
-      return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });
-    }
-
-    // Restar monto
-    cuenta.saldo = parseFloat(cuenta.saldo) - parseFloat(monto);
-    await cuenta.save();
-
-    // Registrar la transacción
-    const nuevaTransaccion = await Transaccion.create({
-      tipo: 'Retiro',
-      fecha: new Date(),
-      monto,
-      id_cuenta_origen: cuenta.id_cuenta,
-      id_cuenta_destino: cuenta.id_cuenta, // retiro propio
-      id_corresponsal: 2, // fijo o puedes ajustarlo
-      id_tipo_transaccion: 3 // id del tipo “retiro” en tu base
+    const res = await fetch("/api/transaccion/retiro", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     });
 
-    res.status(201).json({
-      mensaje: 'Retiro realizado correctamente',
-      resultado: {
-        transaccion: nuevaTransaccion,
-        nuevo_saldo: cuenta.saldo
-      }
-    });
+    const respuesta = await res.json();
 
-  } catch (error) {
-    console.error('Error al realizar el retiro:', error);
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    if (res.ok) {
+      alert(respuesta.mensaje);
+      actualizarSaldo(respuesta.resultado.nuevo_saldo);
+    } else {
+      alert(respuesta.mensaje || "Error al retirar");
+    }
+  } catch (err) {
+    alert("Error al conectar con el servidor.");
+    console.error(err);
   }
-};
+}
+  
 
 
   // Eventos de botones
