@@ -59,8 +59,8 @@
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
 
       try {
         const res = await fetch("/api/auth/login", {
@@ -72,44 +72,55 @@
         const data = await res.json();
         console.log("🔍 Datos recibidos del backend:", data);
 
-        if (res.ok) {
-          const usuario = data.resultado.usuario;
-          const token = data.resultado.token;
-
-          // Guardamos en localStorage
-          localStorage.setItem("token", token);
-          localStorage.setItem("rol", usuario.rol);
-
-          if (usuario.id_cliente) {
-            localStorage.setItem("id_cliente", usuario.id_cliente);
-            localStorage.setItem("id_cuenta", usuario.id_cuenta);
-            console.log("✅ ID Cliente:", usuario.id_cliente);
-            console.log("✅ ID Cuenta:", usuario.id_cuenta);
-          } else {
-            localStorage.removeItem("id_cliente");
-            localStorage.removeItem("id_cuenta");
-            console.warn(" Este usuario no tiene cliente/cuenta asociada");
-          }
-
-          alert(`Bienvenido ${usuario.username}`);
-
-          // Redirigir según el rol
-          if (usuario.rol === "ADMIN") {
-            window.location.href = "/vista_admin/menu_principal.html";
-          } else if (usuario.rol === "CLIENTE") {
-            window.location.href = "/vista_cliente/panel_cliente.html";
-          } else if (usuario.rol === "ADMIN_DB") {
-            window.location.href = "/vista_admi_db/menu_admin_db.html";
-          } else {
-            window.location.href = "/vista_login/login.html";
-          }
-
-        } else {
+        if (!res.ok) {
           alert(data.mensaje || "Error al iniciar sesión");
+          return;
+        }
+
+        // Validar estructura esperada
+        if (!data.resultado || !data.resultado.usuario) {
+          alert("Respuesta del servidor inválida");
+          console.error("Estructura inesperada:", data);
+          return;
+        }
+
+        const { usuario, token } = data.resultado;
+
+        // Guardar en localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("rol", usuario.rol);
+
+        if (usuario.id_cliente) {
+          localStorage.setItem("id_cliente", usuario.id_cliente);
+          localStorage.setItem("id_cuenta", usuario.id_cuenta);
+          console.log("✅ ID Cliente:", usuario.id_cliente);
+          console.log("✅ ID Cuenta:", usuario.id_cuenta);
+        } else {
+          localStorage.removeItem("id_cliente");
+          localStorage.removeItem("id_cuenta");
+          console.warn("⚠️ Este usuario no tiene cliente/cuenta asociada");
+        }
+
+        alert(`Bienvenido ${usuario.username}`);
+
+        // Redirección según rol
+        switch (usuario.rol) {
+          case "ADMIN":
+            window.location.href = "/vista_admin/menu_principal.html";
+            break;
+          case "CLIENTE":
+            window.location.href = "/vista_cliente/panel_cliente.html";
+            break;
+          case "ADMIN_DB":
+            window.location.href = "/vista_admi_db/menu_admin_db.html";
+            break;
+          default:
+            window.location.href = "/vista_login/login.html";
+            break;
         }
 
       } catch (error) {
-        console.error("Error en login:", error);
+        console.error("❌ Error en login:", error);
         alert("Error en el servidor: " + error.message);
       }
     });
