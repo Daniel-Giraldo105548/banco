@@ -58,7 +58,32 @@
     montoInput.value = "";
   }
 
-  // Depositar
+  // ✅ Consultar saldo
+  async function obtenerSaldo() {
+    const idCliente = localStorage.getItem("id_cliente");
+    console.log("ID Cliente desde localStorage:", idCliente);
+
+    if (!idCliente) {
+      alert("No se encontró ID de cliente. Inicia sesión otra vez.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        actualizarSaldo(data.resultado.saldo);
+      } else {
+        alert(data.mensaje);
+      }
+    } catch (err) {
+      alert("Error al consultar saldo.");
+      console.error(err);
+    }
+  }
+
+  // ✅ Depositar
   async function depositar() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) return alert("Inicia sesión de nuevo");
@@ -101,7 +126,7 @@
     }
   }
 
- // Retirar
+ // ✅ Retirar
 async function retirar() {
   const idCliente = localStorage.getItem("id_cliente");
   if (!idCliente) return alert("Inicia sesión de nuevo");
@@ -131,7 +156,7 @@ async function retirar() {
     console.error(err);
   }
 }
-
+  
 
 
   // Eventos de botones
@@ -139,7 +164,7 @@ async function retirar() {
   document.getElementById("depositar").addEventListener("click", depositar);
   document.getElementById("retirar").addEventListener("click", retirar);
 
-  // Consultar saldo automáticamente al abrir
+  // ✅ Consultar saldo automáticamente al abrir
   document.addEventListener("DOMContentLoaded", obtenerSaldo);
 </script>
 
