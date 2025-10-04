@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi Banco - Login</title>
+
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     body {
       background-color: #f5f8fa;
@@ -68,38 +70,46 @@
         });
 
         const data = await res.json();
-        console.log("Datos recibidos en login:", data); // Depuración
+        console.log("🔍 Datos recibidos del backend:", data);
 
         if (res.ok) {
-          // Guardamos datos en localStorage
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("rol", data.usuario.rol);
+          const usuario = data.resultado.usuario;
+          const token = data.resultado.token;
 
-          if (data.usuario.id_cliente) { 
-            localStorage.setItem("id_cliente", data.usuario.id_cliente);
-            console.log("ID Cliente guardado:", data.usuario.id_cliente);
+          // Guardamos en localStorage
+          localStorage.setItem("token", token);
+          localStorage.setItem("rol", usuario.rol);
+
+          if (usuario.id_cliente) {
+            localStorage.setItem("id_cliente", usuario.id_cliente);
+            localStorage.setItem("id_cuenta", usuario.id_cuenta);
+            console.log("✅ ID Cliente:", usuario.id_cliente);
+            console.log("✅ ID Cuenta:", usuario.id_cuenta);
           } else {
             localStorage.removeItem("id_cliente");
-            console.warn("Este usuario no tiene id_cliente asociado");
+            localStorage.removeItem("id_cuenta");
+            console.warn(" Este usuario no tiene cliente/cuenta asociada");
           }
 
+          alert(`Bienvenido ${usuario.username}`);
 
-          alert(`Bienvenido ${data.usuario.username}`);
-
-          // Redirigir según rol
-          if (data.usuario.rol === "ADMIN") {
+          // Redirigir según el rol
+          if (usuario.rol === "ADMIN") {
             window.location.href = "/vista_admin/menu_principal.html";
-          } else if (data.usuario.rol === "CLIENTE") {
+          } else if (usuario.rol === "CLIENTE") {
             window.location.href = "/vista_cliente/panel_cliente.html";
-          } else if (data.usuario.rol === "ADMIN_DB") {
+          } else if (usuario.rol === "ADMIN_DB") {
             window.location.href = "/vista_admi_db/menu_admin_db.html";
           } else {
             window.location.href = "/vista_login/login.html";
           }
+
         } else {
-          alert(data.mensaje || "Error en login");
+          alert(data.mensaje || "Error al iniciar sesión");
         }
+
       } catch (error) {
+        console.error("Error en login:", error);
         alert("Error en el servidor: " + error.message);
       }
     });

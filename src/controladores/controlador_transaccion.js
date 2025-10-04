@@ -142,7 +142,7 @@ const depositarEnCuenta = async (req, res) => {
       }
     }
 
-    // 💰 Actualizar saldo de la cuenta destino
+    // Actualizar saldo de la cuenta destino
     cuentaDestino.saldo = parseFloat(cuentaDestino.saldo) + parseFloat(monto);
     await cuentaDestino.save();
 
@@ -181,62 +181,50 @@ const depositarEnCuenta = async (req, res) => {
   }
 };
 
-// POST - Retirar dinero de una cuenta
-const retirarDeCuenta = async (req, res) => {
+const { Usuario, Cuenta } = require('../base_dato/index');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const iniciarSesion = async (req, res) => {
   try {
-    const { id_cuenta_origen, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+    const { username, password } = req.body;
+    console.log('cuerpo recibido:', req.body);
 
-    // Validaciones básicas
-    if (!id_cuenta_origen || !monto || monto <= 0) {
-      return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
-    }
-
-    // Buscar la cuenta origen
-    const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
-    if (!cuentaOrigen) {
-      return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
-    }
-
-    // Verificar saldo suficiente
-    if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
-      return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });
-    }
-
-    // 💸 Actualizar saldo (restar monto)
-    cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
-    await cuentaOrigen.save();
-
-    // Registrar la transacción
-    const nuevaTransaccion = await Transaccion.create({
-      tipo: 'Retiro',
-      fecha,
-      monto,
-      id_cuenta_origen,
-      id_cuenta_destino: id_cuenta_origen, // retiro propio
-      id_corresponsal,
-      id_tipo_transaccion
+    const usuario = await Usuario.findOne({
+      where: { username },
+      include: [{ model: Cuenta, as: 'cuentas' }]
     });
 
-    // Traer la transacción con relaciones
-    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
-      include: [
-        { model: Cuenta, as: 'cuentaOrigen' },
-        { model: Cuenta, as: 'cuentaDestino' },
-        { model: Corresponsal, as: 'corresponsal' },
-        { model: TipoTransaccion, as: 'tipoTransaccion' }
-      ]
-    });
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
+    }
 
-    res.status(201).json({
-      mensaje: 'Retiro realizado correctamente',
+    const validarPassword = await bcrypt.compare(password, usuario.password_hash);
+    if (!validarPassword) {
+      return res.status(401).json({ mensaje: 'Contraseña incorrecta', resultado: null });
+    }
+
+    const token = jwt.sign({ id: usuario.id_usuario }, process.env.JWT_SECRET, { expiresIn: '2h' });
+
+    // Obtén la primera cuenta asociada al cliente
+    const cuenta = usuario.cuentas && usuario.cuentas[0] ? usuario.cuentas[0] : null;
+
+    res.status(200).json({
+      mensaje: 'Inicio de sesión exitoso',
       resultado: {
-        transaccion: transaccionConRelaciones,
-        nuevo_saldo: cuentaOrigen.saldo
+        token,
+        usuario: {
+          id_usuario: usuario.id_usuario,
+          username: usuario.username,
+          rol: usuario.rol,
+          id_cliente: usuario.id_cliente,
+          id_cuenta: cuenta ? cuenta.id_cuenta : null 
+        }
       }
     });
 
   } catch (error) {
-    console.error('Error al realizar el retiro:', error);
+    console.error('Error al iniciar sesión:', error);
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
