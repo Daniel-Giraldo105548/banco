@@ -37,7 +37,7 @@
 
 <div class="cajero-card">
   <h3 class="text-center mb-3">Cajero Digital</h3>
-  <div class="saldo" id="saldo">Saldo: $0</div>
+  <div class="saldo" id="saldo">Saldo: Cargando...</div>
 
   <div class="mb-3">
     <label for="monto" class="form-label">Monto</label>
@@ -52,41 +52,56 @@
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
 
+  // Actualiza el saldo en pantalla
   function actualizarSaldo(saldo) {
     saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
     montoInput.value = "";
   }
 
-  // ✅ Obtener saldo automáticamente al cargar
+  // Consultar saldo automáticamente
   async function obtenerSaldo() {
     const idCliente = localStorage.getItem("id_cliente");
-    if (!idCliente) return alert("Inicia sesión nuevamente.");
+    console.log("ID Cliente desde localStorage:", idCliente);
+
+    if (!idCliente) {
+      alert("No se encontró ID de cliente. Inicia sesión otra vez.");
+      return;
+    }
 
     try {
       const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
       const data = await res.json();
-      if (res.ok) actualizarSaldo(data.resultado.saldo);
-      else alert(data.mensaje);
+
+      if (res.ok) {
+        actualizarSaldo(data.resultado.saldo);
+      } else {
+        alert(data.mensaje);
+      }
     } catch (err) {
       alert("Error al consultar saldo.");
+      console.error(err);
     }
   }
 
-  // ✅ Depositar
+  // Depositar dinero
   async function depositar() {
-    const idCuenta = parseInt(localStorage.getItem("id_cuenta"));
-    if (!idCuenta) return alert("Inicia sesión nuevamente.");
+    const idCliente = localStorage.getItem("id_cliente");
+    if (!idCliente) return alert("Inicia sesión de nuevo");
 
     const monto = parseFloat(montoInput.value);
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+
+    const idCuenta = parseInt(localStorage.getItem("id_cuenta")) || 1;
+    const idCorresponsal = 2; 
+    const idTipoTransaccion = 2; // depósito
 
     const data = {
       id_cuenta_origen: idCuenta,
       id_cuenta_destino: idCuenta,
       monto,
       fecha: new Date().toISOString().split('T')[0],
-      id_corresponsal: 2,
-      id_tipo_transaccion: 2
+      id_corresponsal: idCorresponsal,
+      id_tipo_transaccion: idTipoTransaccion
     };
 
     try {
@@ -97,18 +112,20 @@
       });
 
       const respuesta = await res.json();
+
       if (res.ok) {
         alert(respuesta.mensaje);
         actualizarSaldo(respuesta.resultado.nuevo_saldo);
       } else {
-        alert(respuesta.mensaje);
+        alert(respuesta.mensaje || "Error al depositar");
       }
     } catch (err) {
       alert("Error al conectar con el servidor.");
+      console.error(err);
     }
   }
 
-  // ✅ Retirar (igual que antes)
+  //  Retirar dinero
   async function retirar() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) return alert("Inicia sesión de nuevo");
@@ -135,12 +152,15 @@
       }
     } catch (err) {
       alert("Error al conectar con el servidor.");
+      console.error(err);
     }
   }
 
+  // Eventos de botones
   document.getElementById("depositar").addEventListener("click", depositar);
   document.getElementById("retirar").addEventListener("click", retirar);
 
+  // Cargar saldo automáticamente al abrir
   document.addEventListener("DOMContentLoaded", obtenerSaldo);
 </script>
 

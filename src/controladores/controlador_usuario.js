@@ -124,10 +124,11 @@ const borrarUsuario = async (req, res) => {
 };
 
 // ============================
-// POST - Login usuario con JWT y cuenta asociada
+// POST - Login usuario
 // ============================
 const jwt = require('jsonwebtoken');
 
+// POST - Login usuario con JWT
 const loginUsuario = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -138,6 +139,7 @@ const loginUsuario = async (req, res) => {
       return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
     }
 
+    // Convertir a objeto plano para acceder a todas las propiedades
     const usuario = usuarioSequelize.get({ plain: true });
 
     // Verificar contraseña
@@ -146,21 +148,14 @@ const loginUsuario = async (req, res) => {
       return res.status(401).json({ mensaje: 'Clave incorrecta', resultado: null });
     }
 
-    // Buscar cuenta asociada al cliente
-    const cuenta = await Cuenta.findOne({ where: { id_cliente: usuario.cliente_id } });
-
-    if (!cuenta) {
-      return res.status(404).json({ mensaje: 'El cliente no tiene una cuenta asociada', resultado: null });
-    }
-
     // Generar token JWT
     const token = jwt.sign(
-      { id: usuario.id_usuario, rol: usuario.rol },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { id: usuario.id_usuario, rol: usuario.rol }, // payload
+      process.env.JWT_SECRET,                       // clave secreta
+      { expiresIn: '1h' }                           // duración del token
     );
 
-    // Enviar también id_cuenta y saldo
+    // Respuesta con token y datos del usuario
     res.status(200).json({
       mensaje: 'Login exitoso',
       resultado: {
@@ -169,18 +164,14 @@ const loginUsuario = async (req, res) => {
           id_usuario: usuario.id_usuario,
           username: usuario.username,
           rol: usuario.rol,
-          id_cliente: usuario.cliente_id,
-          id_cuenta: cuenta.id_cuenta, 
-          saldo: cuenta.saldo          
+          cliente_id: usuario.cliente_id // <-- ahora siempre se envía
         }
       }
     });
   } catch (error) {
-    console.error('Error en loginUsuario:', error);
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
-
 
 
 // ============================
