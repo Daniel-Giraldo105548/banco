@@ -122,56 +122,51 @@ const depositarEnCuenta = async (req, res) => {
   try {
     const { id_cuenta_origen, id_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
 
-    // Validaciones básicas
     if (!id_cuenta_destino || !monto || monto <= 0) {
       return res.status(400).json({ mensaje: 'Datos inválidos para el depósito', resultado: null });
     }
 
-    // Buscar cuenta destino
     const cuentaDestino = await Cuenta.findByPk(id_cuenta_destino);
     if (!cuentaDestino) {
       return res.status(404).json({ mensaje: 'La cuenta destino no existe', resultado: null });
     }
 
-    // Si la cuenta origen existe (puede ser la misma)
     let cuentaOrigen = null;
     if (id_cuenta_origen) {
       cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
       if (!cuentaOrigen) {
         return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
       }
+
+      // ⚠️ Verificar que sean del mismo cliente
+      if (cuentaOrigen.id_cliente !== cuentaDestino.id_cliente) {
+        return res.status(403).json({
+          mensaje: 'No puedes depositar desde una cuenta que no te pertenece',
+          resultado: null
+        });
+      }
     }
 
-    // 💰 Actualizar saldo de la cuenta destino
+    // 💰 Actualizar saldo
     cuentaDestino.saldo = parseFloat(cuentaDestino.saldo) + parseFloat(monto);
     await cuentaDestino.save();
 
-    // Registrar la transacción
+    // Registrar transacción
     const nuevaTransaccion = await Transaccion.create({
       tipo: 'Depósito',
       fecha,
       monto,
-      id_cuenta_origen: id_cuenta_origen || id_cuenta_destino, // puede ser la misma
+      id_cuenta_origen: id_cuenta_origen || id_cuenta_destino,
       id_cuenta_destino,
       id_corresponsal,
       id_tipo_transaccion
     });
 
-    // Traer la transacción con relaciones
-    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
-      include: [
-        { model: Cuenta, as: 'cuentaOrigen' },
-        { model: Cuenta, as: 'cuentaDestino' },
-        { model: Corresponsal, as: 'corresponsal' },
-        { model: TipoTransaccion, as: 'tipoTransaccion' }
-      ]
-    });
-
     res.status(201).json({
       mensaje: 'Depósito realizado correctamente',
       resultado: {
-        transaccion: transaccionConRelaciones,
-        nuevo_saldo: cuentaDestino.saldo
+        nuevo_saldo: cuentaDestino.saldo,
+        transaccion: nuevaTransaccion
       }
     });
 
@@ -180,6 +175,7 @@ const depositarEnCuenta = async (req, res) => {
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
+
 
  // POST - Retirar dinero desde el cliente
 const retirarDeCuenta = async (req, res) => {
