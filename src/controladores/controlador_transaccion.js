@@ -182,7 +182,6 @@ const depositarEnCuenta = async (req, res) => {
 };
 
 
-
 module.exports = {
   registrarTransaccion,
   listarTransacciones,
