@@ -91,20 +91,37 @@
     const monto = parseFloat(montoInput.value);
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
+    // 🔹 Puedes cambiar estos valores fijos según tu lógica
+    const idCuenta = parseInt(localStorage.getItem("id_cuenta")) || 1; // o cargarlo desde tu sesión
+    const idCorresponsal = 2; // id fijo por ahora
+    const idTipoTransaccion = 2; // id tipo "Depósito"
+
+    const data = {
+      id_cuenta_origen: idCuenta,       // puede ser el mismo
+      id_cuenta_destino: idCuenta,      // se deposita a sí mismo
+      monto,
+      fecha: new Date().toISOString().split('T')[0], // fecha actual YYYY-MM-DD
+      id_corresponsal: idCorresponsal,
+      id_tipo_transaccion: idTipoTransaccion
+    };
+
     try {
-      const res = await fetch("/api/cuenta/depositar", {
+      const res = await fetch("/api/deposito", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_cliente: idCliente, monto })
+        body: JSON.stringify(data)
       });
-      const data = await res.json();
+
+      const respuesta = await res.json();
+
       if (res.ok) {
-        actualizarSaldo(data.saldo);
+        alert(respuesta.mensaje);
+        actualizarSaldo(respuesta.resultado.nuevo_saldo);
       } else {
-        alert(data.mensaje);
+        alert(respuesta.mensaje || "Error al depositar");
       }
     } catch (err) {
-      alert("Error al depositar.");
+      alert("Error al conectar con el servidor.");
       console.error(err);
     }
   }
