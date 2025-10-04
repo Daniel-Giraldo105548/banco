@@ -37,7 +37,7 @@
 
 <div class="cajero-card">
   <h3 class="text-center mb-3">Cajero Digital</h3>
-  <div class="saldo" id="saldo">Saldo: $0</div>
+  <div class="saldo" id="saldo">Saldo: Cargando...</div>
 
   <div class="mb-3">
     <label for="monto" class="form-label">Monto</label>
@@ -46,19 +46,19 @@
 
   <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
   <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
-  <button class="btn btn-primary btn-cajero" id="consultar">Consultar Saldo</button>
 </div>
 
 <script>
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
 
+  // Actualiza el saldo en pantalla
   function actualizarSaldo(saldo) {
     saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
     montoInput.value = "";
   }
 
-  // ✅ Consultar saldo
+  // Consultar saldo automáticamente
   async function obtenerSaldo() {
     const idCliente = localStorage.getItem("id_cliente");
     console.log("ID Cliente desde localStorage:", idCliente);
@@ -83,7 +83,7 @@
     }
   }
 
-  // ✅ Depositar
+  // Depositar dinero
   async function depositar() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) return alert("Inicia sesión de nuevo");
@@ -91,16 +91,15 @@
     const monto = parseFloat(montoInput.value);
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
-    // 🔹 Puedes cambiar estos valores fijos según tu lógica
-    const idCuenta = parseInt(localStorage.getItem("id_cuenta")) || 1; // o cargarlo desde tu sesión
-    const idCorresponsal = 2; // id fijo por ahora
-    const idTipoTransaccion = 2; // id tipo "Depósito"
+    const idCuenta = parseInt(localStorage.getItem("id_cuenta")) || 1;
+    const idCorresponsal = 2; 
+    const idTipoTransaccion = 2; // depósito
 
     const data = {
-      id_cuenta_origen: idCuenta,       // puede ser el mismo
-      id_cuenta_destino: idCuenta,      // se deposita a sí mismo
+      id_cuenta_origen: idCuenta,
+      id_cuenta_destino: idCuenta,
       monto,
-      fecha: new Date().toISOString().split('T')[0], // fecha actual YYYY-MM-DD
+      fecha: new Date().toISOString().split('T')[0],
       id_corresponsal: idCorresponsal,
       id_tipo_transaccion: idTipoTransaccion
     };
@@ -126,45 +125,42 @@
     }
   }
 
- // ✅ Retirar
-async function retirar() {
-  const idCliente = localStorage.getItem("id_cliente");
-  if (!idCliente) return alert("Inicia sesión de nuevo");
+  //  Retirar dinero
+  async function retirar() {
+    const idCliente = localStorage.getItem("id_cliente");
+    if (!idCliente) return alert("Inicia sesión de nuevo");
 
-  const monto = parseFloat(montoInput.value);
-  if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
-  const data = { id_cliente: idCliente, monto };
+    const data = { id_cliente: idCliente, monto };
 
-  try {
-    const res = await fetch("/api/transaccion/retiro", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    try {
+      const res = await fetch("/api/transaccion/retiro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-    const respuesta = await res.json();
+      const respuesta = await res.json();
 
-    if (res.ok) {
-      alert(respuesta.mensaje);
-      actualizarSaldo(respuesta.resultado.nuevo_saldo);
-    } else {
-      alert(respuesta.mensaje || "Error al retirar");
+      if (res.ok) {
+        alert(respuesta.mensaje);
+        actualizarSaldo(respuesta.resultado.nuevo_saldo);
+      } else {
+        alert(respuesta.mensaje || "Error al retirar");
+      }
+    } catch (err) {
+      alert("Error al conectar con el servidor.");
+      console.error(err);
     }
-  } catch (err) {
-    alert("Error al conectar con el servidor.");
-    console.error(err);
   }
-}
-  
-
 
   // Eventos de botones
-  document.getElementById("consultar").addEventListener("click", obtenerSaldo);
   document.getElementById("depositar").addEventListener("click", depositar);
   document.getElementById("retirar").addEventListener("click", retirar);
 
-  // ✅ Consultar saldo automáticamente al abrir
+  // Cargar saldo automáticamente al abrir
   document.addEventListener("DOMContentLoaded", obtenerSaldo);
 </script>
 
