@@ -1,7 +1,11 @@
 const Joi = require('joi');
-const { Transaccion, Cuenta, Corresponsal, TipoTransaccion } = require('../base_dato/index');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { Transaccion, Cuenta, Corresponsal, TipoTransaccion, Usuario } = require('../base_dato/index');
 
-// Validador para Transaccion
+// =======================
+// Validación de transacción
+// =======================
 const validadorTransaccion = Joi.object({
   tipo: Joi.string().min(2).max(50).required(),
   fecha: Joi.date().required(),
@@ -12,7 +16,9 @@ const validadorTransaccion = Joi.object({
   id_tipo_transaccion: Joi.number().integer().required()
 });
 
-// POST - Registrar transaccion
+// =======================
+// POST - Registrar transacción
+// =======================
 const registrarTransaccion = async (req, res) => {
   try {
     const { error } = validadorTransaccion.validate(req.body, { abortEarly: false });
@@ -23,23 +29,18 @@ const registrarTransaccion = async (req, res) => {
 
     const { id_cuenta_origen, id_cuenta_destino, id_corresponsal, id_tipo_transaccion } = req.body;
 
-    // Validar existencia de llaves foráneas
     const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
-    if (!cuentaOrigen) return res.status(400).json({ mensaje: 'La cuenta de origen no existe', resultado: null });
-
     const cuentaDestino = await Cuenta.findByPk(id_cuenta_destino);
-    if (!cuentaDestino) return res.status(400).json({ mensaje: 'La cuenta de destino no existe', resultado: null });
-
     const corresponsal = await Corresponsal.findByPk(id_corresponsal);
-    if (!corresponsal) return res.status(400).json({ mensaje: 'El corresponsal no existe', resultado: null });
-
     const tipoTransaccion = await TipoTransaccion.findByPk(id_tipo_transaccion);
+
+    if (!cuentaOrigen) return res.status(400).json({ mensaje: 'La cuenta de origen no existe', resultado: null });
+    if (!cuentaDestino) return res.status(400).json({ mensaje: 'La cuenta de destino no existe', resultado: null });
+    if (!corresponsal) return res.status(400).json({ mensaje: 'El corresponsal no existe', resultado: null });
     if (!tipoTransaccion) return res.status(400).json({ mensaje: 'El tipo de transacción no existe', resultado: null });
 
-    // Crear transacción
     const nuevaTransaccion = await Transaccion.create(req.body);
 
-    // Traer la transacción con relaciones
     const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
       include: [
         { model: Cuenta, as: 'cuentaOrigen' },
@@ -55,7 +56,9 @@ const registrarTransaccion = async (req, res) => {
   }
 };
 
+// =======================
 // GET - Listar transacciones
+// =======================
 const listarTransacciones = async (req, res) => {
   try {
     const transacciones = await Transaccion.findAll({
@@ -73,7 +76,9 @@ const listarTransacciones = async (req, res) => {
   }
 };
 
-// PUT - Actualizar transaccion
+// =======================
+// PUT - Actualizar transacción
+// =======================
 const actualizarTransaccion = async (req, res) => {
   try {
     const { id_transaccion } = req.params;
@@ -103,7 +108,9 @@ const actualizarTransaccion = async (req, res) => {
   }
 };
 
-// DELETE - Borrar transaccion
+// =======================
+// DELETE - Borrar transacción
+// =======================
 const borrarTransaccion = async (req, res) => {
   try {
     const { id_transaccion } = req.params;
@@ -117,50 +124,35 @@ const borrarTransaccion = async (req, res) => {
   }
 };
 
-// POST - Depositar dinero en una cuenta
+// =======================
+// POST - Depositar dinero
+// =======================
 const depositarEnCuenta = async (req, res) => {
   try {
-    const { id_cuenta_origen, id_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+    const { id_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
 
-    // Validaciones básicas
     if (!id_cuenta_destino || !monto || monto <= 0) {
       return res.status(400).json({ mensaje: 'Datos inválidos para el depósito', resultado: null });
     }
 
-    // Buscar cuenta destino
     const cuentaDestino = await Cuenta.findByPk(id_cuenta_destino);
-    if (!cuentaDestino) {
-      return res.status(404).json({ mensaje: 'La cuenta destino no existe', resultado: null });
-    }
+    if (!cuentaDestino) return res.status(404).json({ mensaje: 'La cuenta destino no existe', resultado: null });
 
-    // Si la cuenta origen existe (puede ser la misma)
-    let cuentaOrigen = null;
-    if (id_cuenta_origen) {
-      cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
-      if (!cuentaOrigen) {
-        return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
-      }
-    }
-
-    // Actualizar saldo de la cuenta destino
     cuentaDestino.saldo = parseFloat(cuentaDestino.saldo) + parseFloat(monto);
     await cuentaDestino.save();
 
-    // Registrar la transacción
     const nuevaTransaccion = await Transaccion.create({
       tipo: 'Depósito',
       fecha,
       monto,
-      id_cuenta_origen: id_cuenta_origen || id_cuenta_destino, // puede ser la misma
+      id_cuenta_origen: id_cuenta_destino,
       id_cuenta_destino,
       id_corresponsal,
       id_tipo_transaccion
     });
 
-    // Traer la transacción con relaciones
     const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
       include: [
-        { model: Cuenta, as: 'cuentaOrigen' },
         { model: Cuenta, as: 'cuentaDestino' },
         { model: Corresponsal, as: 'corresponsal' },
         { model: TipoTransaccion, as: 'tipoTransaccion' }
@@ -169,22 +161,64 @@ const depositarEnCuenta = async (req, res) => {
 
     res.status(201).json({
       mensaje: 'Depósito realizado correctamente',
-      resultado: {
-        transaccion: transaccionConRelaciones,
-        nuevo_saldo: cuentaDestino.saldo
-      }
+      resultado: { transaccion: transaccionConRelaciones, nuevo_saldo: cuentaDestino.saldo }
     });
-
   } catch (error) {
-    console.error('Error al realizar el depósito:', error);
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
 
-const { Usuario, Cuenta } = require('../base_dato/index');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// =======================
+// POST - Retirar dinero
+// =======================
+const retirarDeCuenta = async (req, res) => {
+  try {
+    const { id_cuenta_origen, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
 
+    if (!id_cuenta_origen || !monto || monto <= 0) {
+      return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
+    }
+
+    const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
+    if (!cuentaOrigen) return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
+
+    if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
+      return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });
+    }
+
+    cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
+    await cuentaOrigen.save();
+
+    const nuevaTransaccion = await Transaccion.create({
+      tipo: 'Retiro',
+      fecha,
+      monto,
+      id_cuenta_origen,
+      id_cuenta_destino: id_cuenta_origen,
+      id_corresponsal,
+      id_tipo_transaccion
+    });
+
+    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
+      include: [
+        { model: Cuenta, as: 'cuentaOrigen' },
+        { model: Corresponsal, as: 'corresponsal' },
+        { model: TipoTransaccion, as: 'tipoTransaccion' }
+      ]
+    });
+
+    res.status(201).json({
+      mensaje: 'Retiro realizado correctamente',
+      resultado: { transaccion: transaccionConRelaciones, nuevo_saldo: cuentaOrigen.saldo }
+    });
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message, resultado: null });
+  }
+};
+
+// =======================
+// POST - Iniciar sesión
+// =======================
 const iniciarSesion = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -195,18 +229,12 @@ const iniciarSesion = async (req, res) => {
       include: [{ model: Cuenta, as: 'cuentas' }]
     });
 
-    if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
-    }
+    if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
 
     const validarPassword = await bcrypt.compare(password, usuario.password_hash);
-    if (!validarPassword) {
-      return res.status(401).json({ mensaje: 'Contraseña incorrecta', resultado: null });
-    }
+    if (!validarPassword) return res.status(401).json({ mensaje: 'Contraseña incorrecta', resultado: null });
 
     const token = jwt.sign({ id: usuario.id_usuario }, process.env.JWT_SECRET, { expiresIn: '2h' });
-
-    // Obtén la primera cuenta asociada al cliente
     const cuenta = usuario.cuentas && usuario.cuentas[0] ? usuario.cuentas[0] : null;
 
     res.status(200).json({
@@ -218,13 +246,11 @@ const iniciarSesion = async (req, res) => {
           username: usuario.username,
           rol: usuario.rol,
           id_cliente: usuario.id_cliente,
-          id_cuenta: cuenta ? cuenta.id_cuenta : null 
+          id_cuenta: cuenta ? cuenta.id_cuenta : null
         }
       }
     });
-
   } catch (error) {
-    console.error('Error al iniciar sesión:', error);
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
@@ -235,5 +261,6 @@ module.exports = {
   actualizarTransaccion,
   borrarTransaccion,
   depositarEnCuenta,
-  retirarDeCuenta
+  retirarDeCuenta,
+  iniciarSesion
 };
