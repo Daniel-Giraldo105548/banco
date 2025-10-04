@@ -10,5 +10,6 @@ enrutador.put('/actualizar/:id_transaccion', controlador_transaccion.actualizarT
 enrutador.delete('/borrar/:id_transaccion', controlador_transaccion.borrarTransaccion);
 
 enrutador.post('/deposito', controlador_transaccion.depositarEnCuenta);
+enrutador.post('/retiro', controlador_transaccion.retirarDeCuenta);
 
 module.exports = enrutador;

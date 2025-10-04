@@ -135,7 +135,7 @@
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
     try {
-      const res = await fetch("/api/cuenta/retirar", {
+      const res = await fetch("/api/transaccion/retiro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_cliente: idCliente, monto })
