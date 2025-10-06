@@ -36,16 +36,18 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // 4. Respuesta
+    // ✅ Estructura compatible con el frontend
     res.json({
       mensaje: "Login exitoso",
-      token,
-      usuario: {
-        id_usuario: user.id_usuario,
-        username: user.username,
-        rol: user.rol,
-        estado: user.estado,
-        id_cliente: user.id_cliente, // ✅ ahora usa el campo correcto
+      resultado: {
+        token,
+        usuario: {
+          id_usuario: user.id_usuario,
+          username: user.username,
+          rol: user.rol,
+          estado: user.estado,
+          id_cliente: user.id_cliente,
+        },
       },
     });
   } catch (error) {
@@ -75,10 +77,10 @@ router.post("/register", async (req, res) => {
     // 3. Si el rol es CLIENTE, primero crea un cliente
     if (rol === "CLIENTE") {
       const nuevoCliente = await Cliente.create({
-        nombre: username, // 👈 aquí pon los campos que realmente necesita tu tabla Cliente
+        nombre: username,
         estado: "ACTIVO",
       });
-      id_cliente = nuevoCliente.id_cliente; // ✅ columna correcta
+      id_cliente = nuevoCliente.id_cliente;
     }
 
     // 4. Crear usuario
@@ -87,7 +89,7 @@ router.post("/register", async (req, res) => {
       password_hash: hashedPassword,
       rol,
       estado: "ACTIVO",
-      id_cliente, // ✅ corregido
+      id_cliente,
     });
 
     // 5. Respuesta
@@ -98,7 +100,7 @@ router.post("/register", async (req, res) => {
         username: nuevoUsuario.username,
         rol: nuevoUsuario.rol,
         estado: nuevoUsuario.estado,
-        id_cliente: nuevoUsuario.id_cliente, // ✅ corregido
+        id_cliente: nuevoUsuario.id_cliente,
       },
     });
   } catch (error) {
