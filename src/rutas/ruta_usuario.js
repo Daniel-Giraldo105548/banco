@@ -7,7 +7,6 @@ const verificarToken = require('../middlewares/verificar_token');
 
 // Rutas para clientes
 enrutador.post('/registrar', controlador_usuario.registrarUsuario);
-enrutador.post('/login', controlador_usuario.loginUsuario);
 enrutador.get('/listar', controlador_usuario.listarUsuarios);
 enrutador.put('/actualizar/:cliente_id', controlador_usuario.actualizarUsuario);
 enrutador.delete('/borrar/:cliente_id', controlador_usuario.borrarUsuario);
