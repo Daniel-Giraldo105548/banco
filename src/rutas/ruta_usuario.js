@@ -11,7 +11,6 @@ enrutador.post('/login', controlador_usuario.loginUsuario);
 enrutador.get('/listar', controlador_usuario.listarUsuarios);
 enrutador.put('/actualizar/:cliente_id', controlador_usuario.actualizarUsuario);
 enrutador.delete('/borrar/:cliente_id', controlador_usuario.borrarUsuario);
-enrutador.post('/logout', controlador_usuario.loginUsuario);
 
 
 
