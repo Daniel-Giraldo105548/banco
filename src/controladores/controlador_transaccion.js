@@ -216,54 +216,6 @@ const retirarDeCuenta = async (req, res) => {
   }
 };
 
-const iniciarSesion = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    console.log("Cuerpo recibido:", req.body);
-
-    const usuario = await Usuario.findOne({
-      where: { username },
-      include: [{ model: Cuenta, as: "cuentas" }]
-    });
-
-    if (!usuario) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado", resultado: null });
-    }
-
-    const validarPassword = await bcrypt.compare(password, usuario.password_hash);
-    if (!validarPassword) {
-      return res.status(401).json({ mensaje: "Contraseña incorrecta", resultado: null });
-    }
-
-    const token = jwt.sign(
-      { id: usuario.id_usuario, rol: usuario.rol },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" }
-    );
-
-    const cuenta = Array.isArray(usuario.cuentas) && usuario.cuentas.length > 0
-      ? usuario.cuentas[0]
-      : null;
-
-    res.status(200).json({
-      mensaje: "Inicio de sesión exitoso",
-      resultado: {
-        token,
-        usuario: {
-          id_usuario: usuario.id_usuario,
-          username: usuario.username,
-          rol: usuario.rol,
-          id_cliente: usuario.id_cliente || null,
-          id_cuenta: cuenta ? cuenta.id_cuenta : null
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error("Error al iniciar sesión:", error);
-    res.status(500).json({ mensaje: "Error interno del servidor", resultado: null });
-  }
-};
 
 module.exports = {
   registrarTransaccion,
@@ -272,5 +224,4 @@ module.exports = {
   borrarTransaccion,
   depositarEnCuenta,
   retirarDeCuenta,
-  iniciarSesion
 };
