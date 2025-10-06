@@ -126,52 +126,52 @@ const borrarUsuario = async (req, res) => {
 // ============================
 // POST - Login usuario
 // ============================
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
-// POST - Login usuario con JWT
-const loginUsuario = async (req, res) => {
-  try {
-    const { username, password } = req.body;
+// // POST - Login usuario con JWT
+// const loginUsuario = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
 
-    // Buscar usuario en la BD
-    const usuarioSequelize = await Usuario.findOne({ where: { username } });
-    if (!usuarioSequelize) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
-    }
+//     // Buscar usuario en la BD
+//     const usuarioSequelize = await Usuario.findOne({ where: { username } });
+//     if (!usuarioSequelize) {
+//       return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
+//     }
 
-    // Convertir a objeto plano para acceder a todas las propiedades
-    const usuario = usuarioSequelize.get({ plain: true });
+//     // Convertir a objeto plano para acceder a todas las propiedades
+//     const usuario = usuarioSequelize.get({ plain: true });
 
-    // Verificar contraseña
-    const isMatch = await bcrypt.compare(password, usuario.password_hash);
-    if (!isMatch) {
-      return res.status(401).json({ mensaje: 'Clave incorrecta', resultado: null });
-    }
+//     // Verificar contraseña
+//     const isMatch = await bcrypt.compare(password, usuario.password_hash);
+//     if (!isMatch) {
+//       return res.status(401).json({ mensaje: 'Clave incorrecta', resultado: null });
+//     }
 
-    // Generar token JWT
-    const token = jwt.sign(
-      { id: usuario.id_usuario, rol: usuario.rol }, // payload
-      process.env.JWT_SECRET,                       // clave secreta
-      { expiresIn: '1h' }                           // duración del token
-    );
+//     // Generar token JWT
+//     const token = jwt.sign(
+//       { id: usuario.id_usuario, rol: usuario.rol }, // payload
+//       process.env.JWT_SECRET,                       // clave secreta
+//       { expiresIn: '1h' }                           // duración del token
+//     );
 
-    // Respuesta con token y datos del usuario
-    res.status(200).json({
-      mensaje: 'Login exitoso',
-      resultado: {
-        token,
-        usuario: {
-          id_usuario: usuario.id_usuario,
-          username: usuario.username,
-          rol: usuario.rol,
-          cliente_id: usuario.cliente_id // <-- ahora siempre se envía
-        }
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
-  }
-};
+//     // Respuesta con token y datos del usuario
+//     res.status(200).json({
+//       mensaje: 'Login exitoso',
+//       resultado: {
+//         token,
+//         usuario: {
+//           id_usuario: usuario.id_usuario,
+//           username: usuario.username,
+//           rol: usuario.rol,
+//           cliente_id: usuario.cliente_id // <-- ahora siempre se envía
+//         }
+//       }
+//     });
+//   } catch (error) {
+//     res.status(500).json({ mensaje: error.message, resultado: null });
+//   }
+// };
 
 
 // ============================
@@ -207,6 +207,5 @@ module.exports = {
   listarUsuarios,
   actualizarUsuario,
   borrarUsuario,
-  loginUsuario, 
   asignarRol
 };
