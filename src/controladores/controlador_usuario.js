@@ -15,20 +15,9 @@ const validadorUsuario = Joi.object({
   cliente_id: Joi.number().integer().optional()
 });
 
-// ============================
-// POST - Registrar usuario
-// ============================
 const registrarUsuario = async (req, res) => {
   try {
-    const { error } = validadorUsuario.validate(req.body, { abortEarly: false });
-    if (error) {
-      return res.status(400).json({
-        mensaje: 'Errores en la validación',
-        resultado: error.details.map(d => d.message)
-      });
-    }
-
-    const { username, password, rol, cliente_id } = req.body;
+    const { username, password, rol, id_cliente } = req.body; // CAMBIO: antes decía cliente_id
 
     // Verificar si ya existe el usuario
     const usuarioExistente = await Usuario.findOne({ where: { username } });
@@ -36,26 +25,35 @@ const registrarUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: 'El usuario ya existe', resultado: null });
     }
 
-    // Si se proporcionó cliente_id, validar que exista
-    if (cliente_id) {
-      const cliente = await Cliente.findByPk(cliente_id);
-      if (!cliente) {
-        return res.status(404).json({ mensaje: 'El cliente asociado no existe', resultado: null });
-      }
+    // Si se proporciona un id_cliente, verificar que exista
+    let clienteIdFinal = id_cliente;
+
+    if (!clienteIdFinal) {
+      // Si no se envía, crear cliente automáticamente
+      const nuevoCliente = await Cliente.create({
+        nombre: username,
+        apellido: '',
+        documento: '0000000000',
+        telefono: '',
+        correo: '',
+        direccion: '',
+        id_barrio: null
+      });
+      clienteIdFinal = nuevoCliente.id_cliente;
     }
 
     // Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear usuario con rol por defecto CLIENTE si no viene
+    // Crear usuario con el cliente asociado
     const nuevoUsuario = await Usuario.create({
       username,
       password_hash: hashedPassword,
-      rol: rol || 'CLIENTE', // asignar CLIENTE por defecto
-      cliente_id,
+      rol: rol || 'CLIENTE',
+      id_cliente: clienteIdFinal, // CAMBIO: usar id_cliente (coincide con la BD)
     });
 
-    res.status(201).json({ mensaje: 'Usuario creado', resultado: nuevoUsuario });
+    res.status(201).json({ mensaje: 'Usuario creado correctamente', resultado: nuevoUsuario });
   } catch (error) {
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
