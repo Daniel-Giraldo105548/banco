@@ -16,7 +16,7 @@ const defineCliente = (sequelize, DataTypes) => {
     },
     apellido: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: false
     },
     telefono: {
       type: DataTypes.STRING(12),
@@ -24,16 +24,12 @@ const defineCliente = (sequelize, DataTypes) => {
     },
     correo: {
       type: DataTypes.STRING(100),
-      allowNull: true,
-      validate: {
-        isEmail: true
-      }
+      allowNull: true
     },
     direccion: {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-
     id_barrio: {
       type: DataTypes.INTEGER,
       allowNull: true,
