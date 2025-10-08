@@ -173,14 +173,23 @@ const depositarEnCuenta = async (req, res) => {
 // =======================
 const retirarDeCuenta = async (req, res) => {
   try {
-    const { id_cuenta_origen, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+    let { id_cuenta_origen, id_cliente, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+
+    // Si llega id_cliente, buscar la cuenta asociada
+    if (!id_cuenta_origen && id_cliente) {
+      const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+      id_cuenta_origen = cuenta ? cuenta.id_cuenta : null;
+    }
 
     if (!id_cuenta_origen || !monto || monto <= 0) {
       return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
     }
 
+    // 🔹 Aquí agregamos la línea que faltaba:
     const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
-    if (!cuentaOrigen) return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
+    if (!cuentaOrigen) {
+      return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
+    }
 
     if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
       return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });

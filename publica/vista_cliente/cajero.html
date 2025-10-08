@@ -126,35 +126,35 @@
   }
 
   //  Retirar dinero
-  async function retirar() {
-    const idCliente = localStorage.getItem("id_cliente");
-    if (!idCliente) return alert("Inicia sesión de nuevo");
+async function retirar() {
+  const idCuenta = localStorage.getItem("id_cuenta");
+  if (!idCuenta) return alert("No se encontró la cuenta. Inicia sesión de nuevo.");
 
-    const monto = parseFloat(montoInput.value);
-    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+  const monto = parseFloat(montoInput.value);
+  if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
-    const data = { id_cliente: idCliente, monto };
+  const data = { id_cuenta_origen: idCuenta, monto };
 
-    try {
-      const res = await fetch("/api/transaccion/retiro", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+  try {
+    const res = await fetch("/api/transaccion/retiro", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
 
-      const respuesta = await res.json();
+    const respuesta = await res.json();
 
-      if (res.ok) {
-        alert(respuesta.mensaje);
-        actualizarSaldo(respuesta.resultado.nuevo_saldo);
-      } else {
-        alert(respuesta.mensaje || "Error al retirar");
-      }
-    } catch (err) {
-      alert("Error al conectar con el servidor.");
-      console.error(err);
+    if (res.ok) {
+      alert(respuesta.mensaje);
+      actualizarSaldo(respuesta.resultado.nuevo_saldo);
+    } else {
+      alert(respuesta.mensaje || "Error al retirar");
     }
+  } catch (err) {
+    alert("Error al conectar con el servidor.");
+    console.error(err);
   }
+}
 
   // Eventos de botones
   document.getElementById("depositar").addEventListener("click", depositar);
