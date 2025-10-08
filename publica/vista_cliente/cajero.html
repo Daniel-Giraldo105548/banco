@@ -18,7 +18,7 @@
       background: #fff;
       border-radius: 1rem;
       padding: 2rem;
-      width: 400px;
+      width: 350px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     }
     .saldo {
@@ -31,20 +31,14 @@
       width: 100%;
       margin-bottom: 0.5rem;
     }
-    .separador {
-      border-top: 1px solid #ddd;
-      margin: 1.5rem 0;
-    }
   </style>
 </head>
 <body>
 
 <div class="cajero-card">
-  <h3 class="text-center mb-3">💳 Cajero Digital</h3>
-
+  <h3 class="text-center mb-3">Cajero Digital</h3>
   <div class="saldo" id="saldo">Saldo: Cargando...</div>
 
-  <!-- Depositar / Retirar -->
   <div class="mb-3">
     <label for="monto" class="form-label">Monto</label>
     <input type="number" class="form-control" id="monto" placeholder="Ingresa el monto">
@@ -53,18 +47,21 @@
   <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
   <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
 
-  <div class="separador"></div>
+  <hr>
 
-  <!-- Transferencia -->
-  <h5 class="text-center mb-3">Transferencia</h5>
+  <!-- 🔁 SECCIÓN DE TRANSFERENCIA -->
+  <h5 class="text-center mt-3">Transferencia</h5>
+
   <div class="mb-3">
-    <label for="cuentaDestino" class="form-label">Número de cuenta destino</label>
-    <input type="text" class="form-control" id="cuentaDestino" placeholder="Ej: 1002345678">
+    <label for="cuentaDestino" class="form-label">ID Cuenta Destino</label>
+    <input type="number" class="form-control" id="cuentaDestino" placeholder="Ej: 5">
   </div>
+
   <div class="mb-3">
     <label for="montoTransferencia" class="form-label">Monto a transferir</label>
     <input type="number" class="form-control" id="montoTransferencia" placeholder="Ingresa el monto">
   </div>
+
   <button class="btn btn-primary btn-cajero" id="transferir">Transferir</button>
 </div>
 
@@ -72,13 +69,11 @@
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
 
-  // Actualiza el saldo en pantalla
   function actualizarSaldo(saldo) {
     saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
     montoInput.value = "";
   }
 
-  // Consultar saldo automáticamente
   async function obtenerSaldo() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) {
@@ -89,19 +84,14 @@
     try {
       const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
       const data = await res.json();
-
-      if (res.ok) {
-        actualizarSaldo(data.resultado.saldo);
-      } else {
-        alert(data.mensaje);
-      }
+      if (res.ok) actualizarSaldo(data.resultado.saldo);
+      else alert(data.mensaje);
     } catch (err) {
       alert("Error al consultar saldo.");
       console.error(err);
     }
   }
 
-  // Depositar dinero
   async function depositar() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) return alert("Inicia sesión de nuevo");
@@ -110,16 +100,13 @@
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
     const idCuenta = parseInt(localStorage.getItem("id_cuenta")) || 1;
-    const idCorresponsal = 2; 
-    const idTipoTransaccion = 2; // depósito
-
     const data = {
       id_cuenta_origen: idCuenta,
       id_cuenta_destino: idCuenta,
       monto,
       fecha: new Date().toISOString().split('T')[0],
-      id_corresponsal: idCorresponsal,
-      id_tipo_transaccion: idTipoTransaccion
+      id_corresponsal: 2,
+      id_tipo_transaccion: 2
     };
 
     try {
@@ -130,7 +117,6 @@
       });
 
       const respuesta = await res.json();
-
       if (res.ok) {
         alert(respuesta.mensaje);
         actualizarSaldo(respuesta.resultado.nuevo_saldo);
@@ -143,7 +129,6 @@
     }
   }
 
-  // Retirar dinero
   async function retirar() {
     const idCuenta = localStorage.getItem("id_cuenta");
     if (!idCuenta) return alert("No se encontró la cuenta. Inicia sesión de nuevo.");
@@ -161,7 +146,6 @@
       });
 
       const respuesta = await res.json();
-
       if (res.ok) {
         alert(respuesta.mensaje);
         actualizarSaldo(respuesta.resultado.nuevo_saldo);
@@ -174,21 +158,20 @@
     }
   }
 
-  // Transferir dinero
   async function transferir() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) return alert("Inicia sesión de nuevo");
 
-    const numeroCuentaDestino = document.getElementById("cuentaDestino").value;
+    const idCuentaDestino = document.getElementById("cuentaDestino").value;
     const monto = parseFloat(document.getElementById("montoTransferencia").value);
 
-    if (!numeroCuentaDestino || isNaN(monto) || monto <= 0) {
+    if (!idCuentaDestino || isNaN(monto) || monto <= 0) {
       return alert("Datos inválidos para la transferencia");
     }
 
     const data = {
       id_cliente: idCliente,
-      numero_cuenta_destino: numeroCuentaDestino,
+      id_cuenta_destino: idCuentaDestino,
       monto,
       fecha: new Date().toISOString().slice(0, 10),
       id_corresponsal: 2,
@@ -215,12 +198,11 @@
     }
   }
 
-  // Eventos de botones
+  // Eventos
   document.getElementById("depositar").addEventListener("click", depositar);
   document.getElementById("retirar").addEventListener("click", retirar);
   document.getElementById("transferir").addEventListener("click", transferir);
 
-  // Cargar saldo automáticamente al abrir
   document.addEventListener("DOMContentLoaded", obtenerSaldo);
 </script>
 
