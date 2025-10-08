@@ -168,98 +168,41 @@ const depositarEnCuenta = async (req, res) => {
   }
 };
 
-// =======================
-// POST - Retirar dinero
-// =======================
-const retirarDeCuenta = async (req, res) => {
-  try {
-    let { id_cuenta_origen, id_cliente, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
-
-    // Si llega id_cliente, buscar la cuenta asociada
-    if (!id_cuenta_origen && id_cliente) {
-      const cuenta = await Cuenta.findOne({ where: { id_cliente } });
-      id_cuenta_origen = cuenta ? cuenta.id_cuenta : null;
-    }
-
-    if (!id_cuenta_origen || !monto || monto <= 0) {
-      return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
-    }
-
-    // 🔹 Aquí agregamos la línea que faltaba:
-    const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
-    if (!cuentaOrigen) {
-      return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
-    }
-
-    if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
-      return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });
-    }
-
-    cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
-    await cuentaOrigen.save();
-
-    const nuevaTransaccion = await Transaccion.create({
-      tipo: 'Retiro',
-      fecha,
-      monto,
-      id_cuenta_origen,
-      id_cuenta_destino: id_cuenta_origen,
-      id_corresponsal,
-      id_tipo_transaccion
-    });
-
-    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
-      include: [
-        { model: Cuenta, as: 'cuentaOrigen' },
-        { model: Corresponsal, as: 'corresponsal' },
-        { model: TipoTransaccion, as: 'tipoTransaccion' }
-      ]
-    });
-
-    res.status(201).json({
-      mensaje: 'Retiro realizado correctamente',
-      resultado: { transaccion: transaccionConRelaciones, nuevo_saldo: cuentaOrigen.saldo }
-    });
-  } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
-  }
-};
-
 const transferir = async (req, res) => {
   try {
-    const { id_cliente, id_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+    const { id_cliente, numero_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
 
-    // Buscar cuenta origen a partir del cliente
+    // Buscar cuenta origen del cliente
     const cuentaOrigen = await Cuenta.findOne({ where: { id_cliente } });
     if (!cuentaOrigen) {
       return res.status(404).json({ mensaje: "Cuenta origen no encontrada" });
     }
 
-    // Buscar cuenta destino
-    const cuentaDestino = await Cuenta.findByPk(id_cuenta_destino);
+    // Buscar cuenta destino por número
+    const cuentaDestino = await Cuenta.findOne({ where: { numero_cuenta: numero_cuenta_destino } });
     if (!cuentaDestino) {
       return res.status(404).json({ mensaje: "Cuenta destino no encontrada" });
     }
 
+    // Verificar saldo
     if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
       return res.status(400).json({ mensaje: "Saldo insuficiente" });
     }
 
-    // 🔹 Restar de origen
+    // Actualizar saldos
     cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
-    // 🔹 Sumar a destino
     cuentaDestino.saldo = parseFloat(cuentaDestino.saldo) + parseFloat(monto);
 
     await cuentaOrigen.save();
     await cuentaDestino.save();
 
-    // Registrar la transacción
+    // Registrar transacción
     const nuevaTransaccion = await Transaccion.create({
       tipo: "Transferencia",
       fecha,
       monto,
       id_cuenta_origen: cuentaOrigen.id_cuenta,
-      id_cuenta_destino,
+      id_cuenta_destino: cuentaDestino.id_cuenta,
       id_corresponsal,
       id_tipo_transaccion
     });
@@ -271,13 +214,12 @@ const transferir = async (req, res) => {
         nuevo_saldo: cuentaOrigen.saldo
       }
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al procesar la transferencia", error: error.message });
   }
 };
-
-
 
 module.exports = {
   registrarTransaccion,
