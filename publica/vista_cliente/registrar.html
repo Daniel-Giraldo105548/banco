@@ -168,11 +168,11 @@
         }
 
         const clienteId = dataCliente.resultado.cliente_id;
-        alert(`✅ Cliente registrado correctamente. ID: ${clienteId}`);
+        alert(`Cliente registrado correctamente. ID: ${clienteId}`);
         window.location.href = `/vista_login/usuario_clave.html?clienteId=${clienteId}`;
 
       } catch (error) {
-        alert('❌ Error al conectar con el servidor');
+        alert('Error al conectar con el servidor');
         console.error('Error:', error);
       }
     });
