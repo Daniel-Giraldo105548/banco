@@ -227,75 +227,56 @@ const retirarDeCuenta = async (req, res) => {
 
 const transferir = async (req, res) => {
   try {
-    let { id_cuenta_origen, id_cliente, id_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+    const { id_cliente, id_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
 
-    // Si llega el id_cliente, buscamos su cuenta de origen
-    if (!id_cuenta_origen && id_cliente) {
-      const cuenta = await Cuenta.findOne({ where: { id_cliente } });
-      id_cuenta_origen = cuenta ? cuenta.id_cuenta : null;
+    // Buscar cuenta origen a partir del cliente
+    const cuentaOrigen = await Cuenta.findOne({ where: { id_cliente } });
+    if (!cuentaOrigen) {
+      return res.status(404).json({ mensaje: "Cuenta origen no encontrada" });
     }
 
-    // Validaciones básicas
-    if (!id_cuenta_origen || !id_cuenta_destino || !monto || monto <= 0) {
-      return res.status(400).json({ mensaje: "Datos inválidos para la transferencia", resultado: null });
-    }
-
-    // Evitar transferencias a la misma cuenta
-    if (id_cuenta_origen === id_cuenta_destino) {
-      return res.status(400).json({ mensaje: "No puedes transferir a la misma cuenta", resultado: null });
-    }
-
-    // Buscar cuentas en la BD
-    const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
+    // Buscar cuenta destino
     const cuentaDestino = await Cuenta.findByPk(id_cuenta_destino);
-
-    if (!cuentaOrigen || !cuentaDestino) {
-      return res.status(404).json({ mensaje: "Una o ambas cuentas no existen", resultado: null });
+    if (!cuentaDestino) {
+      return res.status(404).json({ mensaje: "Cuenta destino no encontrada" });
     }
 
     if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
-      return res.status(400).json({ mensaje: "Saldo insuficiente", resultado: null });
+      return res.status(400).json({ mensaje: "Saldo insuficiente" });
     }
 
-    // Actualizar saldos
+    // 🔹 Restar de origen
     cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
+    // 🔹 Sumar a destino
     cuentaDestino.saldo = parseFloat(cuentaDestino.saldo) + parseFloat(monto);
 
     await cuentaOrigen.save();
     await cuentaDestino.save();
 
-    // Registrar transacción
+    // Registrar la transacción
     const nuevaTransaccion = await Transaccion.create({
       tipo: "Transferencia",
       fecha,
       monto,
-      id_cuenta_origen,
+      id_cuenta_origen: cuentaOrigen.id_cuenta,
       id_cuenta_destino,
       id_corresponsal,
       id_tipo_transaccion
     });
 
-    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
-      include: [
-        { model: Cuenta, as: "cuentaOrigen" },
-        { model: Cuenta, as: "cuentaDestino" },
-        { model: Corresponsal, as: "corresponsal" },
-        { model: TipoTransaccion, as: "tipoTransaccion" }
-      ]
-    });
-
     res.status(201).json({
       mensaje: "Transferencia realizada correctamente",
       resultado: {
-        transaccion: transaccionConRelaciones,
+        transaccion: nuevaTransaccion,
         nuevo_saldo: cuentaOrigen.saldo
       }
     });
   } catch (error) {
-    console.error("Error en transferencia:", error);
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al procesar la transferencia", error: error.message });
   }
 };
+
 
 
 module.exports = {
