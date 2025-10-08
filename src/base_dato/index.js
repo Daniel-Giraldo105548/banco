@@ -84,6 +84,10 @@ Corresponsal.hasMany(Transaccion, { foreignKey: 'id_corresponsal', as: 'transacc
 Transaccion.belongsTo(TipoTransaccion, { foreignKey: 'id_tipo_transaccion', as: 'tipoTransaccion' });
 TipoTransaccion.hasMany(Transaccion, { foreignKey: 'id_tipo_transaccion', as: 'transacciones' });
 
+// Cliente ↔ Barrio
+Cliente.belongsTo(Barrio, { foreignKey: 'id_barrio' });
+Barrio.hasMany(Cliente, { foreignKey: 'id_barrio' });
+
 // Probar conexión
 sequelize.authenticate()
   .then(() => console.log('Conectado a la base de datos.'))

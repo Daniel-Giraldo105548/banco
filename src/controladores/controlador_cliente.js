@@ -44,42 +44,34 @@ const validadorRegistro = Joi.object({
 // POST - Registrar cliente
 const registrarCliente = async (req, res) => {
   try {
-    const { error } = validadorRegistro.validate(req.body, { abortEarly: false });
+    const { nombre, apellido, documento, telefono, direccion, correo, id_barrio } = req.body;
 
-    if (error) {
-      const mensajesErrores = error.details.map(detail => detail.message).join('|');
-      return res.status(400).json({
-        mensaje: 'Errores en la validación',
-        resultado: { erroresValidacion: mensajesErrores }
-      });
+    // Verificar que el documento no exista
+    const existe = await Cliente.findOne({ where: { documento } });
+    if (existe) {
+      return res.status(400).json({ mensaje: "El documento ya está registrado" });
     }
 
-    const { documento, nombre, apellido = null, telefono = null, correo = null, direccion = null } = req.body;
-
-    // verificar si ya existe el cliente
-    const clienteExistente = await Cliente.findOne({ where: { documento } });
-    if (clienteExistente) {
-      return res.status(400).json({ mensaje: 'El cliente ya existe', resultado: null });
-    }
-
-    // crear cliente 
     const nuevoCliente = await Cliente.create({
-      documento,
       nombre,
       apellido,
+      documento,
       telefono,
+      direccion,
       correo,
-      direccion
+      id_barrio
     });
 
     res.status(201).json({
-      mensaje: 'Cliente creado',
-      resultado: nuevoCliente
+      mensaje: "Cliente registrado con éxito",
+      resultado: { cliente_id: nuevoCliente.cliente_id }
     });
   } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    console.error("Error al registrar cliente:", error);
+    res.status(500).json({ mensaje: "Error en el servidor", error: error.message });
   }
 };
+
 
 // GET - Listar clientes
 const listarCliente = async (req, res) => {
