@@ -46,23 +46,36 @@
 
   <button class="btn btn-success btn-cajero" id="depositar">Depositar</button>
   <button class="btn btn-warning btn-cajero" id="retirar">Retirar</button>
+
+  <hr>
+
+  <!-- 🔁 SECCIÓN DE TRANSFERENCIA -->
+  <h5 class="text-center mt-3">Transferencia</h5>
+
+  <div class="mb-3">
+    <label for="cuentaDestino" class="form-label">ID Cuenta Destino</label>
+    <input type="number" class="form-control" id="cuentaDestino" placeholder="Ej: 5">
+  </div>
+
+  <div class="mb-3">
+    <label for="montoTransferencia" class="form-label">Monto a transferir</label>
+    <input type="number" class="form-control" id="montoTransferencia" placeholder="Ingresa el monto">
+  </div>
+
+  <button class="btn btn-primary btn-cajero" id="transferir">Transferir</button>
 </div>
 
 <script>
   const saldoDiv = document.getElementById("saldo");
   const montoInput = document.getElementById("monto");
 
-  // Actualiza el saldo en pantalla
   function actualizarSaldo(saldo) {
     saldoDiv.textContent = "Saldo: $" + saldo.toFixed(2);
     montoInput.value = "";
   }
 
-  // Consultar saldo automáticamente
   async function obtenerSaldo() {
     const idCliente = localStorage.getItem("id_cliente");
-    console.log("ID Cliente desde localStorage:", idCliente);
-
     if (!idCliente) {
       alert("No se encontró ID de cliente. Inicia sesión otra vez.");
       return;
@@ -71,19 +84,14 @@
     try {
       const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
       const data = await res.json();
-
-      if (res.ok) {
-        actualizarSaldo(data.resultado.saldo);
-      } else {
-        alert(data.mensaje);
-      }
+      if (res.ok) actualizarSaldo(data.resultado.saldo);
+      else alert(data.mensaje);
     } catch (err) {
       alert("Error al consultar saldo.");
       console.error(err);
     }
   }
 
-  // Depositar dinero
   async function depositar() {
     const idCliente = localStorage.getItem("id_cliente");
     if (!idCliente) return alert("Inicia sesión de nuevo");
@@ -92,16 +100,13 @@
     if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
     const idCuenta = parseInt(localStorage.getItem("id_cuenta")) || 1;
-    const idCorresponsal = 2; 
-    const idTipoTransaccion = 2; // depósito
-
     const data = {
       id_cuenta_origen: idCuenta,
       id_cuenta_destino: idCuenta,
       monto,
       fecha: new Date().toISOString().split('T')[0],
-      id_corresponsal: idCorresponsal,
-      id_tipo_transaccion: idTipoTransaccion
+      id_corresponsal: 2,
+      id_tipo_transaccion: 2
     };
 
     try {
@@ -112,7 +117,6 @@
       });
 
       const respuesta = await res.json();
-
       if (res.ok) {
         alert(respuesta.mensaje);
         actualizarSaldo(respuesta.resultado.nuevo_saldo);
@@ -125,42 +129,80 @@
     }
   }
 
-  //  Retirar dinero
-async function retirar() {
-  const idCuenta = localStorage.getItem("id_cuenta");
-  if (!idCuenta) return alert("No se encontró la cuenta. Inicia sesión de nuevo.");
+  async function retirar() {
+    const idCuenta = localStorage.getItem("id_cuenta");
+    if (!idCuenta) return alert("No se encontró la cuenta. Inicia sesión de nuevo.");
 
-  const monto = parseFloat(montoInput.value);
-  if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
+    const monto = parseFloat(montoInput.value);
+    if (isNaN(monto) || monto <= 0) return alert("Ingresa un monto válido");
 
-  const data = { id_cuenta_origen: idCuenta, monto };
+    const data = { id_cuenta_origen: idCuenta, monto };
 
-  try {
-    const res = await fetch("/api/transaccion/retiro", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    try {
+      const res = await fetch("/api/transaccion/retiro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-    const respuesta = await res.json();
-
-    if (res.ok) {
-      alert(respuesta.mensaje);
-      actualizarSaldo(respuesta.resultado.nuevo_saldo);
-    } else {
-      alert(respuesta.mensaje || "Error al retirar");
+      const respuesta = await res.json();
+      if (res.ok) {
+        alert(respuesta.mensaje);
+        actualizarSaldo(respuesta.resultado.nuevo_saldo);
+      } else {
+        alert(respuesta.mensaje || "Error al retirar");
+      }
+    } catch (err) {
+      alert("Error al conectar con el servidor.");
+      console.error(err);
     }
-  } catch (err) {
-    alert("Error al conectar con el servidor.");
-    console.error(err);
   }
-}
 
-  // Eventos de botones
+  async function transferir() {
+    const idCliente = localStorage.getItem("id_cliente");
+    if (!idCliente) return alert("Inicia sesión de nuevo");
+
+    const idCuentaDestino = document.getElementById("cuentaDestino").value;
+    const monto = parseFloat(document.getElementById("montoTransferencia").value);
+
+    if (!idCuentaDestino || isNaN(monto) || monto <= 0) {
+      return alert("Datos inválidos para la transferencia");
+    }
+
+    const data = {
+      id_cliente: idCliente,
+      id_cuenta_destino: idCuentaDestino,
+      monto,
+      fecha: new Date().toISOString().slice(0, 10),
+      id_corresponsal: 2,
+      id_tipo_transaccion: 3
+    };
+
+    try {
+      const res = await fetch("/api/transaccion/transferencia", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const respuesta = await res.json();
+      if (res.ok) {
+        alert(respuesta.mensaje);
+        actualizarSaldo(respuesta.resultado.nuevo_saldo);
+      } else {
+        alert(respuesta.mensaje);
+      }
+    } catch (err) {
+      alert("Error al conectar con el servidor");
+      console.error(err);
+    }
+  }
+
+  // Eventos
   document.getElementById("depositar").addEventListener("click", depositar);
   document.getElementById("retirar").addEventListener("click", retirar);
+  document.getElementById("transferir").addEventListener("click", transferir);
 
-  // Cargar saldo automáticamente al abrir
   document.addEventListener("DOMContentLoaded", obtenerSaldo);
 </script>
 
