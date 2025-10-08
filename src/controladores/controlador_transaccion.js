@@ -168,6 +168,63 @@ const depositarEnCuenta = async (req, res) => {
   }
 };
 
+// =======================
+// POST - Retirar dinero
+// =======================
+const retirarDeCuenta = async (req, res) => {
+  try {
+    let { id_cuenta_origen, id_cliente, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
+
+    // Si llega id_cliente, buscar la cuenta asociada
+    if (!id_cuenta_origen && id_cliente) {
+      const cuenta = await Cuenta.findOne({ where: { id_cliente } });
+      id_cuenta_origen = cuenta ? cuenta.id_cuenta : null;
+    }
+
+    if (!id_cuenta_origen || !monto || monto <= 0) {
+      return res.status(400).json({ mensaje: 'Datos inválidos para el retiro', resultado: null });
+    }
+
+    // 🔹 Aquí agregamos la línea que faltaba:
+    const cuentaOrigen = await Cuenta.findByPk(id_cuenta_origen);
+    if (!cuentaOrigen) {
+      return res.status(404).json({ mensaje: 'La cuenta origen no existe', resultado: null });
+    }
+
+    if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
+      return res.status(400).json({ mensaje: 'Saldo insuficiente', resultado: null });
+    }
+
+    cuentaOrigen.saldo = parseFloat(cuentaOrigen.saldo) - parseFloat(monto);
+    await cuentaOrigen.save();
+
+    const nuevaTransaccion = await Transaccion.create({
+      tipo: 'Retiro',
+      fecha,
+      monto,
+      id_cuenta_origen,
+      id_cuenta_destino: id_cuenta_origen,
+      id_corresponsal,
+      id_tipo_transaccion
+    });
+
+    const transaccionConRelaciones = await Transaccion.findByPk(nuevaTransaccion.id_transaccion, {
+      include: [
+        { model: Cuenta, as: 'cuentaOrigen' },
+        { model: Corresponsal, as: 'corresponsal' },
+        { model: TipoTransaccion, as: 'tipoTransaccion' }
+      ]
+    });
+
+    res.status(201).json({
+      mensaje: 'Retiro realizado correctamente',
+      resultado: { transaccion: transaccionConRelaciones, nuevo_saldo: cuentaOrigen.saldo }
+    });
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message, resultado: null });
+  }
+};
+
 const transferir = async (req, res) => {
   try {
     const { id_cliente, numero_cuenta_destino, monto, fecha, id_corresponsal, id_tipo_transaccion } = req.body;
