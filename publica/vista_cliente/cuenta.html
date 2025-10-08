@@ -83,8 +83,10 @@
 <script>
   // Generar número de cuenta aleatorio (10 dígitos)
   function generarNumeroCuenta() {
-    return "CU-" + Math.floor(1000000000 + Math.random() * 9000000000);
+    // Genera un número aleatorio de 10 dígitos
+    return Math.floor(1000000000 + Math.random() * 9000000000).toString();
   }
+
 
   // Al cargar la página
   window.addEventListener("DOMContentLoaded", () => {
