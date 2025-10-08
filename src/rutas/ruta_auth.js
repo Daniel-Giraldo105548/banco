@@ -21,7 +21,29 @@ router.post("/login", async (req, res) => {
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) return res.status(401).json({ mensaje: "Credenciales inválidas" });
 
-    // 3️⃣ Generar token
+    // 3️⃣ Si el usuario NO tiene cliente asociado, crearlo automáticamente
+    let clienteId = user.id_cliente;
+    if (!clienteId) {
+      const nuevoCliente = await Cliente.create({
+        nombre: user.username,
+        apellido: "",
+        documento: "0000000000",
+        telefono: "",
+        correo: "",
+        direccion: "",
+        id_barrio: null
+      });
+
+      clienteId = nuevoCliente.id_cliente;
+
+      // Actualizar usuario con el nuevo id_cliente
+      await user.update({ id_cliente: clienteId });
+    }
+
+    // 4️⃣ Buscar cuenta (si existe)
+    let cuenta = await Cuenta.findOne({ where: { id_cliente: clienteId } });
+
+    // 5️⃣ Generar token
     const token = jwt.sign(
       {
         id_usuario: user.id_usuario,
@@ -32,13 +54,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // 4️⃣ Si tiene cliente, buscar su cuenta
-    let cuenta = null;
-    if (user.id_cliente) {
-      cuenta = await Cuenta.findOne({ where: { id_cliente: user.id_cliente } });
-    }
-
-    // 5️⃣ Respuesta final
+    // 6️⃣ Respuesta final
     res.json({
       mensaje: "Login exitoso",
       resultado: {
@@ -48,7 +64,7 @@ router.post("/login", async (req, res) => {
           username: user.username,
           rol: user.rol,
           estado: user.estado,
-          id_cliente: user.id_cliente,
+          id_cliente: clienteId,
           id_cuenta: cuenta ? cuenta.id_cuenta : null,
           saldo: cuenta ? cuenta.saldo : null,
         },
