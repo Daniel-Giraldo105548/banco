@@ -235,13 +235,12 @@ const transferir = async (req, res) => {
       return res.status(404).json({ mensaje: "Cuenta origen no encontrada" });
     }
 
-    // Buscar cuenta destino por número
+    // Buscar cuenta destino por número de cuenta
     const cuentaDestino = await Cuenta.findOne({ where: { numero_cuenta: numero_cuenta_destino } });
     if (!cuentaDestino) {
       return res.status(404).json({ mensaje: "Cuenta destino no encontrada" });
     }
 
-    // Verificar saldo
     if (parseFloat(cuentaOrigen.saldo) < parseFloat(monto)) {
       return res.status(400).json({ mensaje: "Saldo insuficiente" });
     }
@@ -277,6 +276,7 @@ const transferir = async (req, res) => {
     res.status(500).json({ mensaje: "Error al procesar la transferencia", error: error.message });
   }
 };
+
 
 module.exports = {
   registrarTransaccion,
