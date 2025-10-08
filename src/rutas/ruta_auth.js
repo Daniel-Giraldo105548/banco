@@ -1,13 +1,5 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-// Importa tus modelos desde la conexión
-const { Usuario, Cliente } = require("../base_dato/index");
-
 // =======================
-// LOGIN
+// LOGIN (corregido)
 // =======================
 router.post("/login", async (req, res) => {
   try {
@@ -36,7 +28,16 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // ✅ Estructura compatible con el frontend
+    // 4️⃣ Si es cliente, buscar su cuenta asociada
+    let cuenta = null;
+    if (user.id_cliente || user.cliente_id) {
+      const { Cuenta } = require("../base_dato/index");
+      cuenta = await Cuenta.findOne({
+        where: { id_cliente: user.id_cliente || user.cliente_id }
+      });
+    }
+
+    // 5️⃣ Respuesta final con cuenta incluida
     res.json({
       mensaje: "Login exitoso",
       resultado: {
@@ -46,7 +47,9 @@ router.post("/login", async (req, res) => {
           username: user.username,
           rol: user.rol,
           estado: user.estado,
-          id_cliente: user.id_cliente,
+          id_cliente: user.id_cliente || user.cliente_id,
+          id_cuenta: cuenta ? cuenta.id_cuenta : null,
+          saldo: cuenta ? cuenta.saldo : null
         },
       },
     });
@@ -55,58 +58,3 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ mensaje: "Error en el servidor" });
   }
 });
-
-// =======================
-// REGISTER
-// =======================
-router.post("/register", async (req, res) => {
-  try {
-    const { username, password, rol } = req.body;
-
-    // 1. Verificar si el usuario ya existe
-    const existente = await Usuario.findOne({ where: { username } });
-    if (existente) {
-      return res.status(400).json({ mensaje: "El usuario ya existe" });
-    }
-
-    // 2. Encriptar la contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    let id_cliente = null;
-
-    // 3. Si el rol es CLIENTE, primero crea un cliente
-    if (rol === "CLIENTE") {
-      const nuevoCliente = await Cliente.create({
-        nombre: username,
-        estado: "ACTIVO",
-      });
-      id_cliente = nuevoCliente.id_cliente;
-    }
-
-    // 4. Crear usuario
-    const nuevoUsuario = await Usuario.create({
-      username,
-      password_hash: hashedPassword,
-      rol,
-      estado: "ACTIVO",
-      id_cliente,
-    });
-
-    // 5. Respuesta
-    res.json({
-      mensaje: "Usuario registrado",
-      usuario: {
-        id_usuario: nuevoUsuario.id_usuario,
-        username: nuevoUsuario.username,
-        rol: nuevoUsuario.rol,
-        estado: nuevoUsuario.estado,
-        id_cliente: nuevoUsuario.id_cliente,
-      },
-    });
-  } catch (error) {
-    console.error("Error en register:", error);
-    res.status(500).json({ mensaje: "Error al registrar usuario" });
-  }
-});
-
-module.exports = router;
