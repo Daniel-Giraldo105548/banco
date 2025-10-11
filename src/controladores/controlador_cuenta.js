@@ -51,7 +51,7 @@ const registrarCuenta = async (req, res) => {
 
     const { numero_cuenta, estado, saldo, fecha_apertura, tipo_cuenta, id_cliente } = req.body;
 
-    // Validar cliente
+    // 🔹 Verificar si el cliente existe
     const cliente = await Cliente.findByPk(id_cliente);
     if (!cliente) {
       return res.status(404).json({
@@ -60,7 +60,16 @@ const registrarCuenta = async (req, res) => {
       });
     }
 
-    // Crear cuenta
+    // 🔹 Verificar si el cliente ya tiene una cuenta
+    const cuentaExistente = await Cuenta.findOne({ where: { id_cliente } });
+    if (cuentaExistente) {
+      return res.status(400).json({
+        mensaje: "El cliente ya tiene una cuenta registrada",
+        resultado: cuentaExistente.get({ plain: true }),
+      });
+    }
+
+    // 🔹 Crear nueva cuenta
     const nuevaCuenta = await Cuenta.create({
       numero_cuenta,
       estado,
@@ -71,14 +80,15 @@ const registrarCuenta = async (req, res) => {
     });
 
     return res.status(201).json({
-      mensaje: "Cuenta creada",
+      mensaje: "Cuenta creada correctamente",
       resultado: nuevaCuenta.get({ plain: true }),
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error al registrar cuenta:", err);
     return res.status(500).json({ mensaje: err.message, resultado: null });
   }
 };
+
 
 // ============================
 // GET - Listar cuentas
