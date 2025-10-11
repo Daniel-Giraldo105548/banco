@@ -36,12 +36,12 @@ const validadorCuenta = Joi.object({
 });
 
 // ============================
-// POST - Registrar cuenta
+// POST - Registrar cuenta (actualizado)
 // ============================
 const registrarCuenta = async (req, res) => {
   try {
+    // Validar con Joi
     const { error } = validadorCuenta.validate(req.body, { abortEarly: false });
-
     if (error) {
       return res.status(400).json({
         mensaje: "Errores en la validación",
@@ -51,11 +51,19 @@ const registrarCuenta = async (req, res) => {
 
     const { numero_cuenta, estado, saldo, fecha_apertura, tipo_cuenta, id_cliente } = req.body;
 
+    // 🔹 Validar que se envíe un id_cliente válido
+    if (!id_cliente || isNaN(id_cliente)) {
+      return res.status(400).json({
+        mensaje: "Debe enviarse un id_cliente válido.",
+        resultado: null,
+      });
+    }
+
     // 🔹 Verificar si el cliente existe
     const cliente = await Cliente.findByPk(id_cliente);
     if (!cliente) {
       return res.status(404).json({
-        mensaje: "El cliente no existe",
+        mensaje: "El cliente no existe.",
         resultado: null,
       });
     }
@@ -64,7 +72,7 @@ const registrarCuenta = async (req, res) => {
     const cuentaExistente = await Cuenta.findOne({ where: { id_cliente } });
     if (cuentaExistente) {
       return res.status(400).json({
-        mensaje: "El cliente ya tiene una cuenta registrada",
+        mensaje: "⚠️ Este cliente ya tiene una cuenta registrada. No se pueden crear más.",
         resultado: cuentaExistente.get({ plain: true }),
       });
     }
@@ -80,14 +88,19 @@ const registrarCuenta = async (req, res) => {
     });
 
     return res.status(201).json({
-      mensaje: "Cuenta creada correctamente",
+      mensaje: "✅ Cuenta creada correctamente.",
       resultado: nuevaCuenta.get({ plain: true }),
     });
+
   } catch (err) {
     console.error("Error al registrar cuenta:", err);
-    return res.status(500).json({ mensaje: err.message, resultado: null });
+    return res.status(500).json({
+      mensaje: "Error en el servidor al crear la cuenta.",
+      resultado: null,
+    });
   }
 };
+
 
 
 // ============================

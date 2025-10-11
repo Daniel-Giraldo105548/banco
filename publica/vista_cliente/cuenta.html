@@ -6,6 +6,7 @@
   <title>Crear Cuenta</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
       background-color: #f5f8fa;
@@ -75,22 +76,49 @@
 </div>
 
 <script>
+  // Generar número aleatorio de cuenta
   function generarNumeroCuenta() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
   }
 
-  window.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("numeroCuenta").value = generarNumeroCuenta();
+  // Cargar datos al iniciar
+  window.addEventListener("DOMContentLoaded", async () => {
+    const numeroCuenta = document.getElementById("numeroCuenta");
+    numeroCuenta.value = generarNumeroCuenta();
+
     const idCliente = localStorage.getItem("id_cliente");
 
-    if (idCliente) {
-      document.getElementById("idCliente").value = idCliente;
-    } else {
-      alert("No se pudo obtener el ID del cliente. Por favor inicia sesión nuevamente.");
-      console.error("id_cliente no encontrado en localStorage");
+    if (!idCliente) {
+      Swal.fire({
+        icon: "error",
+        title: "Sesión expirada",
+        text: "No se pudo obtener el ID del cliente. Por favor inicia sesión nuevamente.",
+      }).then(() => (window.location.href = "/login.html"));
+      return;
+    }
+
+    document.getElementById("idCliente").value = idCliente;
+
+    // 🔹 Verificar si el cliente ya tiene cuenta antes de mostrar el formulario
+    try {
+      const res = await fetch(`/api/cuenta/saldo/${idCliente}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.resultado) {
+          Swal.fire({
+            icon: "warning",
+            title: "Ya tienes una cuenta registrada",
+            text: `Número de cuenta: ${data.resultado.numero_cuenta}`,
+            confirmButtonText: "Ir al panel",
+          }).then(() => (window.location.href = "/vista_cliente/panel_cliente.html"));
+        }
+      }
+    } catch (error) {
+      console.warn("No se encontró cuenta previa (probablemente cliente nuevo).");
     }
   });
 
+  // Manejar envío del formulario
   document.getElementById("formCuenta").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -119,18 +147,32 @@
       const data = await res.json();
 
       if (res.ok) {
-        alert("✅ Cuenta creada exitosamente:\nNúmero: " + data.resultado.numero_cuenta);
-        window.location.href = "/vista_cliente/panel_cliente.html";
+        Swal.fire({
+          icon: "success",
+          title: "Cuenta creada exitosamente",
+          text: `Número de cuenta: ${data.resultado.numero_cuenta}`,
+          confirmButtonText: "Ir al panel"
+        }).then(() => window.location.href = "/vista_cliente/panel_cliente.html");
       } else if (data.mensaje.includes("ya tiene una cuenta")) {
-        alert("⚠️ Ya creaste una cuenta anteriormente. Solo se permite una por usuario.");
-        window.location.href = "/vista_cliente/panel_cliente.html";
+        Swal.fire({
+          icon: "warning",
+          title: "Ya tienes una cuenta registrada",
+          text: "Solo se permite una cuenta por usuario.",
+          confirmButtonText: "Ir al panel"
+        }).then(() => window.location.href = "/vista_cliente/panel_cliente.html");
       } else {
-        alert("❌ Error: " + (data.mensaje || "No se pudo registrar la cuenta"));
-        console.error(data.resultado);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data.mensaje || "No se pudo registrar la cuenta."
+        });
       }
     } catch (error) {
-      alert("Error en el servidor: " + error.message);
-      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error del servidor",
+        text: error.message
+      });
     }
   });
 </script>
