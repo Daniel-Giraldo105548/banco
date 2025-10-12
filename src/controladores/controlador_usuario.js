@@ -17,44 +17,38 @@ const validadorUsuario = Joi.object({
 
 const registrarUsuario = async (req, res) => {
   try {
-    const { username, password, rol, id_cliente } = req.body; // CAMBIO: antes decía cliente_id
+    const { username, password, rol, cliente_id } = req.body; // 👈 usa cliente_id (como en tu BD)
 
-    // Verificar si ya existe el usuario
+    // 1️⃣ Verificar si el usuario ya existe
     const usuarioExistente = await Usuario.findOne({ where: { username } });
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: 'El usuario ya existe', resultado: null });
     }
 
-    // Si se proporciona un id_cliente, verificar que exista
-    let clienteIdFinal = id_cliente;
-
-    if (!clienteIdFinal) {
-      // Si no se envía, crear cliente automáticamente
-      const nuevoCliente = await Cliente.create({
-        nombre: username,
-        apellido: '',
-        documento: '0000000000',
-        telefono: '',
-        correo: '',
-        direccion: '',
-        id_barrio: null
-      });
-      clienteIdFinal = nuevoCliente.id_cliente;
+    // 2️⃣ Verificar si el cliente existe
+    const clienteExistente = await Cliente.findByPk(cliente_id);
+    if (!clienteExistente) {
+      return res.status(400).json({ mensaje: 'El cliente no existe', resultado: null });
     }
 
-    // Encriptar la contraseña
+    // 3️⃣ Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear usuario con el cliente asociado
+    // 4️⃣ Crear usuario vinculado al cliente existente
     const nuevoUsuario = await Usuario.create({
       username,
       password_hash: hashedPassword,
       rol: rol || 'CLIENTE',
-      id_cliente: clienteIdFinal, // CAMBIO: usar id_cliente (coincide con la BD)
+      id_cliente: cliente_id // 👈 guarda el id_cliente existente
     });
 
-    res.status(201).json({ mensaje: 'Usuario creado correctamente', resultado: nuevoUsuario });
+    res.status(201).json({
+      mensaje: 'Usuario creado correctamente',
+      resultado: nuevoUsuario
+    });
+
   } catch (error) {
+    console.error('Error al registrar usuario:', error);
     res.status(500).json({ mensaje: error.message, resultado: null });
   }
 };
