@@ -12,23 +12,37 @@ const validadorUsuario = Joi.object({
     .valid('CLIENTE', 'ADMIN_DB', 'BACKOFFICE', 'ASESOR', 'AUDITOR', 'ADMIN')
     .optional(),
   estado: Joi.string().optional(),
+  id_cliente: Joi.number().integer().optional(),
   cliente_id: Joi.number().integer().optional()
 });
 
+// ============================
+// POST - Registrar usuario
+// ============================
 const registrarUsuario = async (req, res) => {
   try {
-    const { username, password, rol, cliente_id } = req.body; // 👈 usa cliente_id (como en tu BD)
+    // ✅ Aceptamos ambos nombres: id_cliente o cliente_id
+    const { username, password, rol, id_cliente, cliente_id } = req.body;
 
     // 1️⃣ Verificar si el usuario ya existe
     const usuarioExistente = await Usuario.findOne({ where: { username } });
     if (usuarioExistente) {
-      return res.status(400).json({ mensaje: 'El usuario ya existe', resultado: null });
+      return res.status(400).json({
+        mensaje: 'El usuario ya existe',
+        resultado: null
+      });
     }
 
+    // ✅ Si vienen ambos, se prioriza el que tenga valor
+    const clienteIdFinal = id_cliente || cliente_id;
+
     // 2️⃣ Verificar si el cliente existe
-    const clienteExistente = await Cliente.findByPk(cliente_id);
+    const clienteExistente = await Cliente.findByPk(clienteIdFinal);
     if (!clienteExistente) {
-      return res.status(400).json({ mensaje: 'El cliente no existe', resultado: null });
+      return res.status(400).json({
+        mensaje: 'El cliente no existe',
+        resultado: null
+      });
     }
 
     // 3️⃣ Encriptar la contraseña
@@ -39,17 +53,19 @@ const registrarUsuario = async (req, res) => {
       username,
       password_hash: hashedPassword,
       rol: rol || 'CLIENTE',
-      id_cliente: cliente_id // 👈 guarda el id_cliente existente
+      id_cliente: clienteIdFinal // ✅ ahora usa el id correcto
     });
 
     res.status(201).json({
       mensaje: 'Usuario creado correctamente',
       resultado: nuevoUsuario
     });
-
   } catch (error) {
     console.error('Error al registrar usuario:', error);
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    res.status(500).json({
+      mensaje: error.message,
+      resultado: null
+    });
   }
 };
 
@@ -59,9 +75,15 @@ const registrarUsuario = async (req, res) => {
 const listarUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({ include: Cliente });
-    res.status(200).json({ mensaje: 'Usuarios listados', resultado: usuarios });
+    res.status(200).json({
+      mensaje: 'Usuarios listados',
+      resultado: usuarios
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    res.status(500).json({
+      mensaje: error.message,
+      resultado: null
+    });
   }
 };
 
@@ -71,12 +93,17 @@ const listarUsuarios = async (req, res) => {
 const actualizarUsuario = async (req, res) => {
   try {
     const { id_usuario } = req.params;
-    const { username, password, rol, cliente_id } = req.body;
+    const { username, password, rol, id_cliente, cliente_id } = req.body;
 
     const usuario = await Usuario.findByPk(id_usuario);
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
+      return res.status(404).json({
+        mensaje: 'Usuario no encontrado',
+        resultado: null
+      });
     }
+
+    const clienteIdFinal = id_cliente || cliente_id;
 
     let hashedPassword = usuario.password_hash;
     if (password) {
@@ -84,15 +111,28 @@ const actualizarUsuario = async (req, res) => {
     }
 
     await Usuario.update(
-      { username, password_hash: hashedPassword, rol, cliente_id },
+      {
+        username,
+        password_hash: hashedPassword,
+        rol,
+        id_cliente: clienteIdFinal
+      },
       { where: { id_usuario } }
     );
 
-    const usuarioActualizado = await Usuario.findByPk(id_usuario, { include: Cliente });
+    const usuarioActualizado = await Usuario.findByPk(id_usuario, {
+      include: Cliente
+    });
 
-    res.status(200).json({ mensaje: 'Usuario actualizado', resultado: usuarioActualizado });
+    res.status(200).json({
+      mensaje: 'Usuario actualizado',
+      resultado: usuarioActualizado
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    res.status(500).json({
+      mensaje: error.message,
+      resultado: null
+    });
   }
 };
 
@@ -105,66 +145,24 @@ const borrarUsuario = async (req, res) => {
 
     const usuario = await Usuario.findByPk(id_usuario);
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
+      return res.status(404).json({
+        mensaje: 'Usuario no encontrado',
+        resultado: null
+      });
     }
 
     await Usuario.destroy({ where: { id_usuario } });
-    res.status(200).json({ mensaje: 'Usuario eliminado', resultado: null });
+    res.status(200).json({
+      mensaje: 'Usuario eliminado',
+      resultado: null
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    res.status(500).json({
+      mensaje: error.message,
+      resultado: null
+    });
   }
 };
-
-// ============================
-// POST - Login usuario
-// ============================
-// const jwt = require('jsonwebtoken');
-
-// // POST - Login usuario con JWT
-// const loginUsuario = async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-
-//     // Buscar usuario en la BD
-//     const usuarioSequelize = await Usuario.findOne({ where: { username } });
-//     if (!usuarioSequelize) {
-//       return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
-//     }
-
-//     // Convertir a objeto plano para acceder a todas las propiedades
-//     const usuario = usuarioSequelize.get({ plain: true });
-
-//     // Verificar contraseña
-//     const isMatch = await bcrypt.compare(password, usuario.password_hash);
-//     if (!isMatch) {
-//       return res.status(401).json({ mensaje: 'Clave incorrecta', resultado: null });
-//     }
-
-//     // Generar token JWT
-//     const token = jwt.sign(
-//       { id: usuario.id_usuario, rol: usuario.rol }, // payload
-//       process.env.JWT_SECRET,                       // clave secreta
-//       { expiresIn: '1h' }                           // duración del token
-//     );
-
-//     // Respuesta con token y datos del usuario
-//     res.status(200).json({
-//       mensaje: 'Login exitoso',
-//       resultado: {
-//         token,
-//         usuario: {
-//           id_usuario: usuario.id_usuario,
-//           username: usuario.username,
-//           rol: usuario.rol,
-//           cliente_id: usuario.cliente_id // <-- ahora siempre se envía
-//         }
-//       }
-//     });
-//   } catch (error) {
-//     res.status(500).json({ mensaje: error.message, resultado: null });
-//   }
-// };
-
 
 // ============================
 // PUT - Asignar rol (solo ADMIN_DB)
@@ -174,23 +172,41 @@ const asignarRol = async (req, res) => {
     const { id_usuario } = req.params;
     const { rol } = req.body;
 
-    // validar rol permitido
-    const rolesPermitidos = ['CLIENTE', 'ADMIN_DB', 'BACKOFFICE', 'ADMIN', 'ASESOR', 'AUDITOR'];
+    const rolesPermitidos = [
+      'CLIENTE',
+      'ADMIN_DB',
+      'BACKOFFICE',
+      'ADMIN',
+      'ASESOR',
+      'AUDITOR'
+    ];
     if (!rolesPermitidos.includes(rol)) {
-      return res.status(400).json({ mensaje: 'Rol no válido', resultado: null });
+      return res.status(400).json({
+        mensaje: 'Rol no válido',
+        resultado: null
+      });
     }
 
     const usuario = await Usuario.findByPk(id_usuario);
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado', resultado: null });
+      return res.status(404).json({
+        mensaje: 'Usuario no encontrado',
+        resultado: null
+      });
     }
 
     usuario.rol = rol;
     await usuario.save();
 
-    res.status(200).json({ mensaje: 'Rol asignado con éxito', resultado: usuario });
+    res.status(200).json({
+      mensaje: 'Rol asignado con éxito',
+      resultado: usuario
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: error.message, resultado: null });
+    res.status(500).json({
+      mensaje: error.message,
+      resultado: null
+    });
   }
 };
 
