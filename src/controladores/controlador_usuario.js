@@ -165,13 +165,14 @@ const borrarUsuario = async (req, res) => {
 };
 
 // ============================
-// PUT - Asignar rol (solo ADMIN_DB)
+// PUT - Asignar rol (solo ADMIN_DB o ADMIN)
 // ============================
 const asignarRol = async (req, res) => {
   try {
     const { id_usuario } = req.params;
     const { rol } = req.body;
 
+    // Validar que el rol sea permitido
     const rolesPermitidos = [
       'CLIENTE',
       'ADMIN_DB',
@@ -180,6 +181,7 @@ const asignarRol = async (req, res) => {
       'ASESOR',
       'AUDITOR'
     ];
+
     if (!rolesPermitidos.includes(rol)) {
       return res.status(400).json({
         mensaje: 'Rol no válido',
@@ -187,6 +189,7 @@ const asignarRol = async (req, res) => {
       });
     }
 
+    // Buscar usuario por ID
     const usuario = await Usuario.findByPk(id_usuario);
     if (!usuario) {
       return res.status(404).json({
@@ -195,20 +198,32 @@ const asignarRol = async (req, res) => {
       });
     }
 
+    // ⚙️ Si el nuevo rol es CLIENTE, validar que tenga cliente asociado
+    if (rol === 'CLIENTE' && !usuario.id_cliente) {
+      return res.status(400).json({
+        mensaje: 'No se puede asignar el rol CLIENTE a un usuario sin cliente asociado',
+        resultado: null
+      });
+    }
+
+    // Actualizar rol directamente
     usuario.rol = rol;
     await usuario.save();
 
     res.status(200).json({
-      mensaje: 'Rol asignado con éxito',
+      mensaje: `Rol asignado con éxito: ${rol}`,
       resultado: usuario
     });
+
   } catch (error) {
+    console.error('Error al asignar rol:', error);
     res.status(500).json({
       mensaje: error.message,
       resultado: null
     });
   }
 };
+
 
 module.exports = {
   registrarUsuario,
