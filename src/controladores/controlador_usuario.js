@@ -21,7 +21,6 @@ const validadorUsuario = Joi.object({
 // ============================
 const registrarUsuario = async (req, res) => {
   try {
-    // ✅ Aceptamos ambos nombres: id_cliente o cliente_id
     const { username, password, rol, id_cliente, cliente_id } = req.body;
 
     // 1️⃣ Verificar si el usuario ya existe
@@ -33,27 +32,37 @@ const registrarUsuario = async (req, res) => {
       });
     }
 
-    // ✅ Si vienen ambos, se prioriza el que tenga valor
+    // ✅ Tomamos el ID del cliente si existe
     const clienteIdFinal = id_cliente || cliente_id;
 
-    // 2️⃣ Verificar si el cliente existe
-    const clienteExistente = await Cliente.findByPk(clienteIdFinal);
-    if (!clienteExistente) {
+    // ⚙️ 2️⃣ Solo verificar cliente si el rol es CLIENTE
+    if ((rol === 'CLIENTE' || !rol) && !clienteIdFinal) {
       return res.status(400).json({
-        mensaje: 'El cliente no existe',
+        mensaje: 'Debe asociar un cliente para el rol CLIENTE',
         resultado: null
       });
     }
 
-    // 3️⃣ Encriptar la contraseña
+    if (rol === 'CLIENTE') {
+      const clienteExistente = await Cliente.findByPk(clienteIdFinal);
+      if (!clienteExistente) {
+        return res.status(400).json({
+          mensaje: 'El cliente no existe',
+          resultado: null
+        });
+      }
+    }
+
+    // 3️⃣ Encriptar contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4️⃣ Crear usuario vinculado al cliente existente
+    // 4️⃣ Crear usuario
     const nuevoUsuario = await Usuario.create({
       username,
       password_hash: hashedPassword,
       rol: rol || 'CLIENTE',
-      id_cliente: clienteIdFinal // ✅ ahora usa el id correcto
+      estado: 'ACTIVO',
+      id_cliente: clienteIdFinal || null
     });
 
     res.status(201).json({
@@ -76,7 +85,7 @@ const listarUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({ include: Cliente });
     res.status(200).json({
-      mensaje: 'Usuarios listados',
+      mensaje: 'Usuarios listados correctamente',
       resultado: usuarios
     });
   } catch (error) {
@@ -125,7 +134,7 @@ const actualizarUsuario = async (req, res) => {
     });
 
     res.status(200).json({
-      mensaje: 'Usuario actualizado',
+      mensaje: 'Usuario actualizado correctamente',
       resultado: usuarioActualizado
     });
   } catch (error) {
@@ -153,7 +162,7 @@ const borrarUsuario = async (req, res) => {
 
     await Usuario.destroy({ where: { id_usuario } });
     res.status(200).json({
-      mensaje: 'Usuario eliminado',
+      mensaje: 'Usuario eliminado correctamente',
       resultado: null
     });
   } catch (error) {
@@ -172,7 +181,6 @@ const asignarRol = async (req, res) => {
     const { id_usuario } = req.params;
     const { rol } = req.body;
 
-    // Validar que el rol sea permitido
     const rolesPermitidos = [
       'CLIENTE',
       'ADMIN_DB',
@@ -181,7 +189,6 @@ const asignarRol = async (req, res) => {
       'ASESOR',
       'AUDITOR'
     ];
-
     if (!rolesPermitidos.includes(rol)) {
       return res.status(400).json({
         mensaje: 'Rol no válido',
@@ -189,7 +196,6 @@ const asignarRol = async (req, res) => {
       });
     }
 
-    // Buscar usuario por ID
     const usuario = await Usuario.findByPk(id_usuario);
     if (!usuario) {
       return res.status(404).json({
@@ -198,32 +204,20 @@ const asignarRol = async (req, res) => {
       });
     }
 
-    // ⚙️ Si el nuevo rol es CLIENTE, validar que tenga cliente asociado
-    if (rol === 'CLIENTE' && !usuario.id_cliente) {
-      return res.status(400).json({
-        mensaje: 'No se puede asignar el rol CLIENTE a un usuario sin cliente asociado',
-        resultado: null
-      });
-    }
-
-    // Actualizar rol directamente
     usuario.rol = rol;
     await usuario.save();
 
     res.status(200).json({
-      mensaje: `Rol asignado con éxito: ${rol}`,
+      mensaje: 'Rol asignado con éxito',
       resultado: usuario
     });
-
   } catch (error) {
-    console.error('Error al asignar rol:', error);
     res.status(500).json({
       mensaje: error.message,
       resultado: null
     });
   }
 };
-
 
 module.exports = {
   registrarUsuario,
