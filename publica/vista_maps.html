@@ -48,7 +48,7 @@
       // Función para obtener y mostrar corresponsales del backend
       async function mostrarCorresponsales() {
         try {
-          const res = await fetch("http://localhost:3000/api/corresponsal/listar");
+          const res = await fetch("/api/corresponsal/listar");
           const data = await res.json();
           const corresponsales = data.resultado;
 
