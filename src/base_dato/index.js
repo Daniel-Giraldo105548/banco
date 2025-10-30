@@ -12,9 +12,6 @@ const defineCuenta = require('../modelos/cuenta');
 const defineTransaccion = require('../modelos/transaccion');
 const defineTipoTransaccion = require('../modelos/tipo_transaccion');
 
-require('dotenv').config();
-const { Sequelize, DataTypes } = require('sequelize');
-
 // ✅ Usar la URL completa de conexión (Render necesita esto)
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
