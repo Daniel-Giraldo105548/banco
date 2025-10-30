@@ -12,22 +12,26 @@ const defineCuenta = require('../modelos/cuenta');
 const defineTransaccion = require('../modelos/transaccion');
 const defineTipoTransaccion = require('../modelos/tipo_transaccion');
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false // importante para Render
-      }
+require('dotenv').config();
+const { Sequelize, DataTypes } = require('sequelize');
+
+// ✅ Usar la URL completa de conexión (Render necesita esto)
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false // Render necesita SSL
     }
-  }
-);
+  },
+  logging: false // opcional, quita logs de SQL
+});
+
+// Probar conexión
+sequelize.authenticate()
+  .then(() => console.log('✅ Conectado correctamente a la base de datos.'))
+  .catch(err => console.error('❌ No se pudo conectar a la base de datos:', err));
+
 
 // Definición de modelos
 const Cliente = defineCliente(sequelize, DataTypes);
